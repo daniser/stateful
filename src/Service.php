@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+namespace TTBooking\Stateful;
+
+use TTBooking\Stateful\Contracts\Query;
+use TTBooking\Stateful\Contracts\Result;
+use TTBooking\Stateful\Exceptions\ClientException;
+
+class Service implements Contracts\Service
+{
+    public function __construct(
+        protected Contracts\Client $client,
+        protected Contracts\StateRepository $store,
+    ) {}
+
+    /**
+     * @template TResult of Result
+     * @template TQuery of Query<TResult>
+     *
+     * @phpstan-param TQuery $query
+     *
+     * @phpstan-return TResult
+     *
+     * @throws ClientException
+     */
+    public function query(Query $query): Result
+    {
+        return $this->client->query($query);
+    }
+
+    public function has(string $id): bool
+    {
+        return $this->store->has($id);
+    }
+
+    public function get(string $id): State
+    {
+        return $this->store->get($id);
+    }
+
+    public function put(State $state): State
+    {
+        return $this->store->put($state);
+    }
+}
