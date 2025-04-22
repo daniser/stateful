@@ -59,6 +59,7 @@
             "aliases": {
                 "Stateful": "TTBooking\\Stateful\\Facades\\Stateful",
                 "SFSerializer": "TTBooking\\Stateful\\Facades\\Serializer",
+                "SFClient": "TTBooking\\Stateful\\Facades\\Client",
                 "SFState": "TTBooking\\Stateful\\Facades\\State"
             }
         }
