@@ -13,7 +13,7 @@ use InvalidArgumentException;
 use TTBooking\Stateful\Contracts\Factory;
 
 /**
- * @template-covariant TConnection of object
+ * @template TConnection of object
  *
  * @implements Factory<TConnection>
  */
@@ -28,7 +28,7 @@ abstract class Manager implements Factory
     /**
      * The registered custom driver creators.
      *
-     * @var array<string, Closure>
+     * @var array<string, Closure(Container, array<string, mixed>, string, string): TConnection>
      */
     protected array $customCreators = [];
 
@@ -43,7 +43,7 @@ abstract class Manager implements Factory
      * Create a new manager instance.
      *
      * @param  Container  $container  The container instance.
-     * @param  Repository  $config    The configuration repository instance.
+     * @param  Repository  $config  The configuration repository instance.
      */
     public function __construct(protected Container $container, protected Repository $config) {}
 
@@ -59,11 +59,11 @@ abstract class Manager implements Factory
     /**
      * Get a connection instance.
      *
-     * @phpstan-return TConnection
+     * @return TConnection
      *
      * @throws InvalidArgumentException
      */
-    public function connection(?string $name = null): object
+    public function connection(?string $name = null)
     {
         $name ??= $this->getDefaultDriver();
 
@@ -93,6 +93,7 @@ abstract class Manager implements Factory
     /**
      * Register a custom driver creator Closure.
      *
+     * @param  Closure(Container, array<string, mixed>, string, string): TConnection  $callback
      * @return $this
      */
     public function extend(string $driver, Closure $callback): static
@@ -105,11 +106,11 @@ abstract class Manager implements Factory
     /**
      * Resolve the given connection.
      *
-     * @phpstan-return TConnection
+     * @return TConnection
      *
      * @throws InvalidArgumentException
      */
-    protected function resolve(string $name): object
+    protected function resolve(string $name)
     {
         $config = $this->getConfig($name);
 
@@ -117,11 +118,12 @@ abstract class Manager implements Factory
         $driver = Arr::pull($config, 'driver');
 
         if (isset($this->customCreators[$driver])) {
-            return $this->callCustomCreator($config, $driver);
+            return $this->callCustomCreator($config, $name, $driver);
         } else {
             $method = 'create'.Str::studly($driver).'Driver';
 
             if (method_exists($this, $method)) {
+                /** @var TConnection */
                 return $this->$method($config, $name, $driver);
             }
         }
@@ -133,12 +135,11 @@ abstract class Manager implements Factory
      * Call a custom driver creator.
      *
      * @param  array<string, mixed>  $config
-     *
-     * @phpstan-return TConnection
+     * @return TConnection
      */
-    protected function callCustomCreator(array $config, string $driver): object
+    protected function callCustomCreator(array $config, string $name, string $driver)
     {
-        return $this->customCreators[$driver]($this->container, $config, $driver);
+        return $this->customCreators[$driver]($this->container, $config, $name, $driver);
     }
 
     /**
@@ -160,13 +161,15 @@ abstract class Manager implements Factory
     /**
      * Get the connection configuration.
      *
-     * @return array{driver: string}
+     * @return array<string, mixed>
      */
     protected function getConfig(string $name): array
     {
         $poolKey = $this->getPoolKey();
 
-        /** @var array{driver: string} */
-        return $this->config->get("$poolKey.$name", []) + ['driver' => $name];
+        /** @var array<string, mixed> $config */
+        $config = $this->config->get("$poolKey.$name", []);
+
+        return $config + ['driver' => $name];
     }
 }

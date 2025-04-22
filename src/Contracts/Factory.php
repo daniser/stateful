@@ -14,11 +14,11 @@ interface Factory
     /**
      * Get a connection instance.
      *
-     * @phpstan-return TConnection
+     * @return TConnection
      *
      * @throws InvalidArgumentException
      */
-    public function connection(?string $name = null): object;
+    public function connection(?string $name = null);
 
     /**
      * Get all of the created connections.
