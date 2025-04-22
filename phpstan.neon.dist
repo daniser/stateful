@@ -1,0 +1,15 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - config
+        - src
+        - tests
+
+    level: max
+
+    ignoreErrors:
+        -
+            message: '#^PHPDoc tag @(return|var) contains generic type Http\\Promise\\Promise<.+?> but interface Http\\Promise\\Promise is not generic\.$#'
+            reportUnmatched: false

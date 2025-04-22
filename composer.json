@@ -1,0 +1,84 @@
+{
+    "name": "daniser/stateful",
+    "type": "library",
+    "description": "Stateful API interface library.",
+    "keywords": ["stateful", "api"],
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/daniser/stateful/issues",
+        "source": "https://github.com/daniser/stateful"
+    },
+    "authors": [
+        {
+            "name": "Sergey Danilchenko",
+            "email": "s.danilchenko@ttbooking.ru"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^11.9 || ^12.0",
+        "php-http/discovery": "^1.9.1",
+        "php-http/httplug": "^1.0 || ^2.0",
+        "psr/http-client-implementation": "^1.0",
+        "psr/http-factory": "^1.0.2",
+        "symfony/serializer": "^6.4 || ^7.0",
+        "symfony/uid": "^6.4 || ^7.0",
+        "symfony/validator": "^6.4 || ^7.0"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^2.7 || ^3.0",
+        "laravel/pint": "^1.13",
+        "mockery/mockery": "^1.6",
+        "nyholm/psr7": "^1.0",
+        "orchestra/testbench": "^9.0 || ^10.0",
+        "pestphp/pest": "^3.2",
+        "pestphp/pest-plugin-laravel": "^3.0",
+        "php-http/message": "^1.7",
+        "php-http/mock-client": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "TTBooking\\Stateful\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TTBooking\\Stateful\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TTBooking\\Stateful\\StatefulServiceProvider",
+                "TTBooking\\Stateful\\StatefulApiServiceProvider"
+            ],
+            "aliases": {
+                "Stateful": "TTBooking\\Stateful\\Facades\\Stateful",
+                "SFSerializer": "TTBooking\\Stateful\\Facades\\Serializer",
+                "SFState": "TTBooking\\Stateful\\Facades\\State"
+            }
+        }
+    },
+    "suggest": {
+        "php-http/message": "Required to use Guzzle for sending HTTP requests",
+        "php-http/guzzle7-adapter": "Required to use Guzzle for sending HTTP requests"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": false
+        },
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "analyse": "@php vendor/bin/phpstan analyse",
+        "lint": "@php vendor/bin/pint --test",
+        "test": "@php vendor/bin/pest"
+    }
+}
