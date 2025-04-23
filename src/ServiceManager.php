@@ -58,26 +58,42 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
      */
     protected function createDefaultDriver(array $config, string $name): Service
     {
-        return new Service(
-            $this->resolveDeps(Contracts\ClientFactory::class, $config['connection'] ?? null, "$name.connection"),
-            $this->resolveDeps(Contracts\RepositoryFactory::class, $config['store'] ?? null, "$name.store"),
-        );
+        return new Service($this->createClient($config, $name), $this->createRepository($config, $name));
     }
 
     /**
-     * @template TConnection of object
-     *
-     * @param  class-string<Contracts\Factory<TConnection>>  $factory
-     * @param  array<string, mixed>|string|null  $config
-     * @return TConnection
+     * @param  array{connection: array<string, mixed>|string|null}  $config
      *
      * @throws BindingResolutionException
      */
-    protected function resolveDeps(string $factory, array|string|null $config, ?string $name = null)
+    protected function createClient(array $config, string $name): Contracts\Client
     {
-        /** @var Contracts\Factory<TConnection> $factory */
-        $factory = $this->container->make($factory);
+        /** @var Contracts\ClientFactory $factory */
+        $factory = $this->container->make(Contracts\ClientFactory::class);
 
-        return is_array($config) ? $factory->makeConnection($config, $name) : $factory->connection($config);
+        return $factory->connection($this->getConnectionName($config, 'connection', $name));
+    }
+
+    /**
+     * @param  array{store: array<string, mixed>|string|null}  $config
+     *
+     * @throws BindingResolutionException
+     */
+    protected function createRepository(array $config, string $name): Contracts\StateRepository
+    {
+        /** @var Contracts\RepositoryFactory $factory */
+        $factory = $this->container->make(Contracts\RepositoryFactory::class);
+
+        return $factory->connection($this->getConnectionName($config, 'store', $name));
+    }
+
+    /**
+     * @param  array<string, array<string, mixed>|string|null>  $config
+     */
+    protected function getConnectionName(array $config, string $key, string $name): ?string
+    {
+        $connection = $config[$key] ?? null;
+
+        return is_array($connection) ? ".{$this->getPoolKey()}.$name.$key" : $connection;
     }
 }

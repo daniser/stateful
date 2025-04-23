@@ -71,14 +71,6 @@ abstract class Manager implements Factory
     }
 
     /**
-     * @return TConnection
-     */
-    public function makeConnection(array $config, ?string $name = null)
-    {
-        //
-    }
-
-    /**
      * Get all of the created connections.
      *
      * @return array<string, TConnection>
@@ -122,8 +114,12 @@ abstract class Manager implements Factory
     {
         $config = $this->getConfig($name);
 
-        /** @var string $driver */
+        /** @var string|null $driver */
         $driver = Arr::pull($config, 'driver');
+
+        if (! isset($driver)) {
+            throw new InvalidArgumentException("Driver for connection [$name] not defined.");
+        }
 
         if (isset($this->customCreators[$driver])) {
             return $this->callCustomCreator($config, $name, $driver);
@@ -136,7 +132,7 @@ abstract class Manager implements Factory
             }
         }
 
-        throw new InvalidArgumentException("Driver [$driver] not supported.");
+        throw new InvalidArgumentException("Driver [$driver] in connection [$name] not supported.");
     }
 
     /**
@@ -173,6 +169,11 @@ abstract class Manager implements Factory
      */
     protected function getConfig(string $name): array
     {
+        if (str_starts_with($name, '.')) {
+            /** @var array<string, mixed> */
+            return $this->config->get(substr($name, 1), []);
+        }
+
         $poolKey = $this->getPoolKey();
 
         /** @var array<string, mixed> $config */
