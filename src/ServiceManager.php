@@ -31,6 +31,16 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
         return $this->service()->query($query);
     }
 
+    public function serialize(mixed $data, array $context = []): string
+    {
+        return $this->service()->serialize($data, $context);
+    }
+
+    public function deserialize(string $data, string $type, array $context = []): object
+    {
+        return $this->service()->deserialize($data, $type, $context);
+    }
+
     public function has(string $id): bool
     {
         return $this->service()->has($id);
@@ -58,7 +68,11 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
      */
     protected function createDefaultDriver(array $config, string $name): Service
     {
-        return new Service($this->createClient($config, $name), $this->createRepository($config, $name));
+        return new Service(
+            $this->createClient($config, $name),
+            $this->createSerializer($config, $name),
+            $this->createRepository($config, $name),
+        );
     }
 
     /**
@@ -72,6 +86,19 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
         $factory = $this->container->make(Contracts\ClientFactory::class);
 
         return $factory->connection($this->getConnectionName($config, 'connection', $name));
+    }
+
+    /**
+     * @param  array{serializer: array<string, mixed>|string|null}  $config
+     *
+     * @throws BindingResolutionException
+     */
+    protected function createSerializer(array $config, string $name): Contracts\Serializer
+    {
+        /** @var Contracts\SerializerFactory $factory */
+        $factory = $this->container->make(Contracts\SerializerFactory::class);
+
+        return $factory->serializer($this->getConnectionName($config, 'serializer', $name));
     }
 
     /**

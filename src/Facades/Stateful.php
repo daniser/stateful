@@ -13,6 +13,8 @@ use TTBooking\Stateful\State;
 /**
  * @method static Service service(string $name = null)
  * @method static Result query(Query $query)
+ * @method static string serialize(mixed $data, array $context = [])
+ * @method static object deserialize(string $data, string $type, array $context = [])
  * @method static bool has(string $id)
  * @method static State get(string $id)
  * @method static State put(State $state)

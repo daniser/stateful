@@ -12,6 +12,7 @@ class Service implements Contracts\Service
 {
     public function __construct(
         protected Contracts\Client $client,
+        protected Contracts\Serializer $serializer,
         protected Contracts\StateRepository $store,
     ) {}
 
@@ -28,6 +29,16 @@ class Service implements Contracts\Service
     public function query(Query $query): Result
     {
         return $this->client->query($query);
+    }
+
+    public function serialize(mixed $data, array $context = []): string
+    {
+        return $this->serializer->serialize($data, $context);
+    }
+
+    public function deserialize(string $data, string $type, array $context = []): object
+    {
+        return $this->serializer->deserialize($data, $type, $context);
     }
 
     public function has(string $id): bool

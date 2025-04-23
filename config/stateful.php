@@ -17,6 +17,7 @@ return [
 
         'air' => [
             'connection' => 'default',
+            'serializer' => 'symfony',
             'store' => 'eloquent', // 'null'
         ],
 
