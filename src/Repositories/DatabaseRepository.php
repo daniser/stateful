@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace TTBooking\Stateful\Repositories;
 
 use Illuminate\Database\ConnectionInterface;
+use TTBooking\Stateful\Concerns\HasSerializer;
+use TTBooking\Stateful\Contracts\SerializesData;
 use TTBooking\Stateful\Contracts\StateRepository;
 use TTBooking\Stateful\Exceptions\StateNotFoundException;
 use TTBooking\Stateful\State;
 
-class DatabaseRepository implements StateRepository
+class DatabaseRepository implements SerializesData, StateRepository
 {
+    use HasSerializer;
+
     public function __construct(
         protected ConnectionInterface $connection,
         protected string $table = 'stateful_state',

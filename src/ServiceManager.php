@@ -7,6 +7,7 @@ namespace TTBooking\Stateful;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use TTBooking\Stateful\Contracts\Query;
 use TTBooking\Stateful\Contracts\Result;
+use TTBooking\Stateful\Contracts\SerializesData;
 use TTBooking\Stateful\Exceptions\ClientException;
 
 /**
@@ -15,6 +16,16 @@ use TTBooking\Stateful\Exceptions\ClientException;
 class ServiceManager extends Support\Manager implements Contracts\Service, Contracts\ServiceFactory
 {
     protected string $selectorKey = 'stateful.service';
+
+    public function serialize(mixed $data, array $context = []): string
+    {
+        return $this->service()->serialize($data, $context);
+    }
+
+    public function deserialize(string $data, string $type, array $context = []): object
+    {
+        return $this->service()->deserialize($data, $type, $context);
+    }
 
     /**
      * @template TResult of Result
@@ -29,16 +40,6 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
     public function query(Query $query): Result
     {
         return $this->service()->query($query);
-    }
-
-    public function serialize(mixed $data, array $context = []): string
-    {
-        return $this->service()->serialize($data, $context);
-    }
-
-    public function deserialize(string $data, string $type, array $context = []): object
-    {
-        return $this->service()->deserialize($data, $type, $context);
     }
 
     public function has(string $id): bool
@@ -62,30 +63,21 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
     }
 
     /**
-     * @param  array{connection: array<string, mixed>|string|null, store: array<string, mixed>|string|null}  $config
+     * @param  array{
+     *     serializer: array<string, mixed>|string|null,
+     *     connection: array<string, mixed>|string|null,
+     *     store: array<string, mixed>|string|null,
+     * }  $config
      *
      * @throws BindingResolutionException
      */
     protected function createDefaultDriver(array $config, string $name): Service
     {
         return new Service(
-            $this->createClient($config, $name),
-            $this->createSerializer($config, $name),
-            $this->createRepository($config, $name),
+            $serializer = $this->createSerializer($config, $name),
+            $this->createClient($config, $name, $serializer),
+            $this->createRepository($config, $name, $serializer),
         );
-    }
-
-    /**
-     * @param  array{connection: array<string, mixed>|string|null}  $config
-     *
-     * @throws BindingResolutionException
-     */
-    protected function createClient(array $config, string $name): Contracts\Client
-    {
-        /** @var Contracts\ClientFactory $factory */
-        $factory = $this->container->make(Contracts\ClientFactory::class);
-
-        return $factory->connection($this->getConnectionName($config, 'connection', $name));
     }
 
     /**
@@ -102,16 +94,41 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
     }
 
     /**
+     * @param  array{connection: array<string, mixed>|string|null}  $config
+     *
+     * @throws BindingResolutionException
+     */
+    protected function createClient(array $config, string $name, ?Contracts\Serializer $serializer): Contracts\Client
+    {
+        /** @var Contracts\ClientFactory $factory */
+        $factory = $this->container->make(Contracts\ClientFactory::class);
+
+        $client = $factory->connection($this->getConnectionName($config, 'connection', $name));
+
+        if ($serializer && $client instanceof SerializesData) {
+            return (clone $client)->setSerializer($serializer);
+        }
+
+        return $client;
+    }
+
+    /**
      * @param  array{store: array<string, mixed>|string|null}  $config
      *
      * @throws BindingResolutionException
      */
-    protected function createRepository(array $config, string $name): Contracts\StateRepository
+    protected function createRepository(array $config, string $name, ?Contracts\Serializer $serializer): Contracts\StateRepository
     {
         /** @var Contracts\RepositoryFactory $factory */
         $factory = $this->container->make(Contracts\RepositoryFactory::class);
 
-        return $factory->connection($this->getConnectionName($config, 'store', $name));
+        $repository = $factory->connection($this->getConnectionName($config, 'store', $name));
+
+        if ($serializer && $repository instanceof SerializesData) {
+            return (clone $repository)->setSerializer($serializer);
+        }
+
+        return $repository;
     }
 
     /**

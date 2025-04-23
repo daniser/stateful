@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace TTBooking\Stateful\Repositories;
 
 use Illuminate\Filesystem\Filesystem;
+use TTBooking\Stateful\Concerns\HasSerializer;
+use TTBooking\Stateful\Contracts\SerializesData;
 use TTBooking\Stateful\Contracts\StateRepository;
 use TTBooking\Stateful\Exceptions\StateNotFoundException;
 use TTBooking\Stateful\State;
 
-class FilesystemRepository implements StateRepository
+class FilesystemRepository implements SerializesData, StateRepository
 {
+    use HasSerializer;
+
     public function __construct(
         protected Filesystem $files,
         protected string $path = 'stateful/state',
