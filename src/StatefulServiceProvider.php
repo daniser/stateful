@@ -20,6 +20,7 @@ class StatefulServiceProvider extends ServiceProvider implements DeferrableProvi
     public $singletons = [
         'stateful-client' => ConnectionManager::class,
         'stateful-store' => StorageManager::class,
+        'stateful-serializer' => SerializerManager::class,
         'stateful' => ServiceManager::class,
     ];
 
@@ -66,6 +67,11 @@ class StatefulServiceProvider extends ServiceProvider implements DeferrableProvi
         $this->app->alias('stateful-store.store', Contracts\StateRepository::class);
 
         /** @phpstan-ignore-next-line */
+        $this->app->singleton('stateful-serializer.serializer', static fn ($app) => $app['stateful-serializer']->serializer());
+        $this->app->alias('stateful-serializer', Contracts\SerializerFactory::class);
+        $this->app->alias('stateful-serializer.serializer', Contracts\Serializer::class);
+
+        /** @phpstan-ignore-next-line */
         $this->app->singleton('stateful.service', static fn ($app) => $app['stateful']->service());
         $this->app->alias('stateful', Contracts\ServiceFactory::class);
         $this->app->alias('stateful.service', Contracts\Service::class);
@@ -83,6 +89,8 @@ class StatefulServiceProvider extends ServiceProvider implements DeferrableProvi
             Contracts\ClientFactory::class, Contracts\Client::class,
             'stateful-store', 'stateful-store.store',
             Contracts\RepositoryFactory::class, Contracts\StateRepository::class,
+            'stateful-serializer', 'stateful-serializer.serializer',
+            Contracts\SerializerFactory::class, Contracts\Serializer::class,
             'stateful', 'stateful.service',
             Contracts\ServiceFactory::class, Contracts\Service::class,
         ];

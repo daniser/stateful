@@ -21,12 +21,12 @@
         "php-http/httplug": "^1.0 || ^2.0",
         "psr/http-client-implementation": "^1.0",
         "psr/http-factory": "^1.0.2",
-        "symfony/serializer": "^6.4 || ^7.0",
         "symfony/uid": "^6.4 || ^7.0",
         "symfony/validator": "^6.4 || ^7.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "jms/serializer": "^3.27",
         "larastan/larastan": "^2.7 || ^3.0",
         "laravel/pint": "^1.13",
         "mockery/mockery": "^1.6",
@@ -35,7 +35,8 @@
         "pestphp/pest": "^3.2",
         "pestphp/pest-plugin-laravel": "^3.0",
         "php-http/message": "^1.7",
-        "php-http/mock-client": "^1.0"
+        "php-http/mock-client": "^1.0",
+        "symfony/serializer": "^6.4 || ^7.0"
     },
     "autoload": {
         "psr-4": {
@@ -65,6 +66,8 @@
         }
     },
     "suggest": {
+        "jms/serializer": "Required to (de)serialize API entities using JMS Serializer",
+        "symfony/serializer": "Required to (de)serialize API entities using Symfony Serializer",
         "php-http/message": "Required to use Guzzle for sending HTTP requests",
         "php-http/guzzle7-adapter": "Required to use Guzzle for sending HTTP requests"
     },

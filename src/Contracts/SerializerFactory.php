@@ -6,12 +6,12 @@ namespace TTBooking\Stateful\Contracts;
 
 use InvalidArgumentException;
 
-interface ServiceFactory
+interface SerializerFactory
 {
     /**
-     * Get a service instance.
+     * Get a serializer instance.
      *
      * @throws InvalidArgumentException
      */
-    public function service(?string $name = null): Service;
+    public function serializer(?string $name = null): Serializer;
 }

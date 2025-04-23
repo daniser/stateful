@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace TTBooking\Stateful\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use TTBooking\Stateful\Contracts\Client as StatefulClient;
+use TTBooking\Stateful\Contracts\Client as ClientContract;
 use TTBooking\Stateful\Contracts\Query;
 use TTBooking\Stateful\Contracts\Result;
 
 /**
- * @method static StatefulClient connection(string $name = null)
+ * @method static ClientContract connection(string $name = null)
  * @method static Result query(Query $query)
  *
  * @see \TTBooking\Stateful\ConnectionManager

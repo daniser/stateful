@@ -14,7 +14,6 @@ final readonly class State
      */
     public function __construct(
         public string $id,
-        public string $service,
         public Contracts\Query $query,
         public Contracts\Result $result,
         public ?string $parentId = null,

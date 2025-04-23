@@ -93,7 +93,29 @@ return [
     | Supported serializers: "default", "symfony", "jms"
     */
 
-    'serializer' => env('SF_SERIALIZER'),
+    'serializer' => env('SF_SERIALIZER', 'default'),
+
+    'serializers' => [
+
+        'symfony' => [
+            'normalizers' => [
+                Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer::class,
+                Symfony\Component\Serializer\Normalizer\DateTimeNormalizer::class,
+                Symfony\Component\Serializer\Normalizer\ArrayDenormalizer::class,
+                Symfony\Component\Serializer\Normalizer\PropertyNormalizer::class,
+            ],
+            'encoders' => [
+                Symfony\Component\Serializer\Encoder\JsonEncoder::class,
+            ],
+            'context' => [],
+        ],
+
+        'jms' => [
+            'enum_support' => true,
+            'naming_strategy' => JMS\Serializer\Naming\IdenticalPropertyNamingStrategy::class,
+        ],
+
+    ],
 
     /*
     |--------------------------------------------------------------------------
