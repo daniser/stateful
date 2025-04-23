@@ -52,15 +52,32 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
     }
 
     /**
-     * @param  array{connection: string, store: string}  $config
+     * @param  array{connection: array<string, mixed>|string|null, store: array<string, mixed>|string|null}  $config
      *
      * @throws BindingResolutionException
      */
-    protected function createDefaultDriver(array $config): Service
+    protected function createDefaultDriver(array $config, string $name): Service
     {
         return new Service(
-            $this->container['stateful-client']->connection($config['connection'] ?? null),
-            $this->container['stateful-store']->connection($config['store'] ?? null),
+            $this->resolveDeps(Contracts\ClientFactory::class, $config['connection'] ?? null, "$name.connection"),
+            $this->resolveDeps(Contracts\RepositoryFactory::class, $config['store'] ?? null, "$name.store"),
         );
+    }
+
+    /**
+     * @template TConnection of object
+     *
+     * @param  class-string<Contracts\Factory<TConnection>>  $factory
+     * @param  array<string, mixed>|string|null  $config
+     * @return TConnection
+     *
+     * @throws BindingResolutionException
+     */
+    protected function resolveDeps(string $factory, array|string|null $config, ?string $name = null)
+    {
+        /** @var Contracts\Factory<TConnection> $factory */
+        $factory = $this->container->make($factory);
+
+        return is_array($config) ? $factory->makeConnection($config, $name) : $factory->connection($config);
     }
 }

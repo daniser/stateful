@@ -71,6 +71,14 @@ abstract class Manager implements Factory
     }
 
     /**
+     * @return TConnection
+     */
+    public function makeConnection(array $config, ?string $name = null)
+    {
+        //
+    }
+
+    /**
      * Get all of the created connections.
      *
      * @return array<string, TConnection>

@@ -10,8 +10,6 @@ use TTBooking\Stateful\Contracts\StateRepository;
 
 /**
  * @extends Support\Manager<StateRepository>
- *
- * @implements RepositoryFactory<StateRepository>
  */
 class StorageManager extends Support\Manager implements RepositoryFactory, StateRepository
 {
