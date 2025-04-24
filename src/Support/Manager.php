@@ -83,11 +83,11 @@ abstract class Manager implements Factory
     /**
      * Dynamically call the default connection instance.
      *
-     * @param  array<mixed>  $parameters
+     * @param  list<mixed>  $arguments
      */
-    public function __call(string $method, array $parameters): mixed
+    public function __call(string $method, array $arguments): mixed
     {
-        return $this->connection()->$method(...$parameters);
+        return $this->connection()->$method(...$arguments);
     }
 
     /**
