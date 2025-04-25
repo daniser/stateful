@@ -71,7 +71,31 @@ class Query implements Contracts\Query
     }
 
     /**
-     * Handle dynamic method calls to the query.
+     * Determine if an attribute exists on the payload.
+     */
+    public function __isset(string $key): bool
+    {
+        return isset($this->payload->$key);
+    }
+
+    /**
+     * Unset an attribute on the payload.
+     */
+    public function __unset(string $key): void
+    {
+        unset($this->payload->$key);
+    }
+
+    /**
+     * Dynamically get properties from the underlying payload.
+     */
+    public function __get(string $key): mixed
+    {
+        return $this->payload->$key;
+    }
+
+    /**
+     * Dynamically pass method calls to the underlying payload.
      *
      * @param  string  $method
      * @param  list<mixed>  $parameters
