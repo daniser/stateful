@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TTBooking\Stateful;
 
+use ArrayAccess;
 use TTBooking\Stateful\Concerns\DelegatesToPayload;
 use TTBooking\Stateful\Concerns\PayloadAttributes;
 
@@ -11,11 +12,12 @@ use TTBooking\Stateful\Concerns\PayloadAttributes;
  * @template TPayload of object
  * @template TResult of Contracts\Result
  *
+ * @implements ArrayAccess<string, mixed>
  * @implements Contracts\Query<TPayload, TResult>
  *
  * @mixin TPayload
  */
-class Query implements Contracts\Query
+class Query implements ArrayAccess, Contracts\Query
 {
     /** @use PayloadAttributes<TResult> */
     use DelegatesToPayload, PayloadAttributes;

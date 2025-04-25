@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TTBooking\Stateful\Concerns;
 
+use BadMethodCallException;
 use Illuminate\Support\Traits\ForwardsCalls;
 use Illuminate\Support\Traits\Macroable;
 
@@ -11,6 +12,46 @@ trait DelegatesToPayload
 {
     use ForwardsCalls, Macroable {
         Macroable::__call as macroCall;
+    }
+
+    /**
+     * Determine if the given property exists.
+     *
+     * @param  string  $offset
+     */
+    public function offsetExists($offset): bool
+    {
+        throw new BadMethodCallException('Method not implemented.');
+    }
+
+    /**
+     * Get the value for a given offset.
+     *
+     * @param  string  $offset
+     */
+    public function offsetGet($offset): mixed
+    {
+        return data_get($this->payload, $offset);
+    }
+
+    /**
+     * Set the value for a given offset.
+     *
+     * @param  string  $offset
+     */
+    public function offsetSet($offset, $value): void
+    {
+        data_set($this->payload, $offset, $value);
+    }
+
+    /**
+     * Unset the value for a given offset.
+     *
+     * @param  string  $offset
+     */
+    public function offsetUnset($offset): void
+    {
+        data_forget($this->payload, $offset);
     }
 
     /**
