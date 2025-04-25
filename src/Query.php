@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace TTBooking\Stateful;
 
-use Illuminate\Support\Traits\ForwardsCalls;
-use Illuminate\Support\Traits\Macroable;
+use TTBooking\Stateful\Concerns\DelegatesToPayload;
+use TTBooking\Stateful\Concerns\PayloadAttributes;
 
 /**
  * @template TPayload of object
@@ -17,12 +17,8 @@ use Illuminate\Support\Traits\Macroable;
  */
 class Query implements Contracts\Query
 {
-    /** @use Concerns\PayloadAttributes<TResult> */
-    use Concerns\PayloadAttributes;
-
-    use ForwardsCalls, Macroable {
-        Macroable::__call as macroCall;
-    }
+    /** @use PayloadAttributes<TResult> */
+    use DelegatesToPayload, PayloadAttributes;
 
     protected ?string $baseUri = null;
 
@@ -68,45 +64,6 @@ class Query implements Contracts\Query
     public function getPayload(): object
     {
         return $this->payload;
-    }
-
-    /**
-     * Determine if an attribute exists on the payload.
-     */
-    public function __isset(string $key): bool
-    {
-        return isset($this->payload->$key);
-    }
-
-    /**
-     * Unset an attribute on the payload.
-     */
-    public function __unset(string $key): void
-    {
-        unset($this->payload->$key);
-    }
-
-    /**
-     * Dynamically get properties from the underlying payload.
-     */
-    public function __get(string $key): mixed
-    {
-        return $this->payload->$key;
-    }
-
-    /**
-     * Dynamically pass method calls to the underlying payload.
-     *
-     * @param  string  $method
-     * @param  list<mixed>  $parameters
-     */
-    public function __call($method, $parameters): mixed
-    {
-        if (static::hasMacro($method)) {
-            return $this->macroCall($method, $parameters);
-        }
-
-        return $this->forwardDecoratedCallTo($this->payload, $method, $parameters);
     }
 
     /**
