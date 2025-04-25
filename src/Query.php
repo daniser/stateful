@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace TTBooking\Stateful;
 
+use Illuminate\Support\Traits\ForwardsCalls;
+use Illuminate\Support\Traits\Macroable;
+
 /**
  * @template TPayload of object
  * @template TResult of Contracts\Result
@@ -16,6 +19,10 @@ class Query implements Contracts\Query
 {
     /** @use Concerns\PayloadAttributes<TResult> */
     use Concerns\PayloadAttributes;
+
+    use ForwardsCalls, Macroable {
+        Macroable::__call as macroCall;
+    }
 
     protected ?string $baseUri = null;
 
@@ -64,13 +71,25 @@ class Query implements Contracts\Query
     }
 
     /**
-     * @param  list<mixed>  $arguments
-     * @return $this
+     * Handle dynamic method calls to the query.
+     *
+     * @param  string  $method
+     * @param  list<mixed>  $parameters
      */
-    public function __call(string $name, array $arguments): static
+    public function __call($method, $parameters): mixed
     {
-        $this->payload->$name(...$arguments);
+        if (static::hasMacro($method)) {
+            return $this->macroCall($method, $parameters);
+        }
 
-        return $this;
+        return $this->forwardDecoratedCallTo($this->payload, $method, $parameters);
+    }
+
+    /**
+     * Force a clone of the underlying payload when cloning.
+     */
+    public function __clone(): void
+    {
+        $this->payload = clone $this->payload;
     }
 }
