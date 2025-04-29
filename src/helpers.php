@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TTBooking\Stateful;
 
+use Illuminate\Support\Collection;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
@@ -110,52 +111,40 @@ function return_class(object|string $objectOrClass, string $methodName): string
 }
 
 /**
- * Get specified class attribute(s), optionally following inheritance chain.
+ * Get specified class attribute(s), optionally following an inheritance chain.
  *
+ * @template TTarget of object
  * @template TAttribute of object
  *
- * @param  class-string|object  $objectOrClass
+ * @param  TTarget|class-string<TTarget>  $objectOrClass
  * @param  class-string<TAttribute>  $attribute
- *
- * @return list<TAttribute>
+ * @return ($ascend is true ? Collection<class-string<contravariant TTarget>, Collection<int, TAttribute>> : Collection<int, TAttribute>)
  */
-function attributes(object|string $objectOrClass, string $attribute, bool $ascend = false): array
+function class_attributes($objectOrClass, string $attribute, bool $ascend = false): Collection
 {
-    $classRef = new ReflectionClass($objectOrClass);
-    $attrRefs = [];
+    $refClass = new ReflectionClass($objectOrClass);
+    $attributes = [];
 
     do {
-        array_push($attrRefs, ...$classRef->getAttributes($attribute));
-    } while ($ascend && false !== $classRef = $classRef->getParentClass());
+        $attributes[$refClass->name] = collect(array_map(
+            fn (ReflectionAttribute $refAttr) => $refAttr->newInstance(),
+            $refClass->getAttributes($attribute)
+        ));
+    } while ($ascend && false !== $refClass = $refClass->getParentClass());
 
-    return array_map(static fn (ReflectionAttribute $attrRef) => $attrRef->newInstance(), $attrRefs);
+    return $ascend ? collect($attributes) : reset($attributes);
 }
 
 /**
- * Get specified class attribute, optionally following inheritance chain.
+ * Get a specified class attribute, optionally following an inheritance chain.
  *
  * @template TAttribute of object
  *
- * @param  class-string|object  $objectOrClass
+ * @param  object|class-string  $objectOrClass
  * @param  class-string<TAttribute>  $attribute
- *
- * @phpstan-return null|TAttribute
+ * @return TAttribute|null
  */
-function attribute(object|string $objectOrClass, string $attribute, bool $ascend = false): ?object
+function class_attribute(object|string $objectOrClass, string $attribute, bool $ascend = false)
 {
-    return attributes($objectOrClass, $attribute, $ascend)[0] ?? null;
-}
-
-/**
- * Convert a string to snake case.
- */
-function snake(string $value, string $delimiter = '_'): string
-{
-    if (! ctype_lower($value)) {
-        $value = preg_replace('/\s+/u', '', ucwords($value));
-
-        $value = mb_strtolower(preg_replace('/(.)(?=[A-Z])/u', '$1'.$delimiter, $value), 'UTF-8');
-    }
-
-    return $value;
+    return class_attributes($objectOrClass, $attribute, $ascend)->flatten()->first();
 }

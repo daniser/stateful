@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace TTBooking\Stateful\Concerns;
 
 use Exception;
+use Illuminate\Support\Str;
 use TTBooking\Stateful\Attributes;
 use TTBooking\Stateful\Contracts\Result;
-use function TTBooking\Stateful\{ attribute, snake };
+use function TTBooking\Stateful\class_attribute;
 
 /**
  * @template TResult of Result
@@ -16,18 +17,18 @@ trait PayloadAttributes
 {
     public function getAlias(): string
     {
-        return attribute($this->getPayload(), Attributes\Alias::class)->alias
-            ?? snake(basename(str_replace('\\', '/', static::class)));
+        return class_attribute($this->getPayload(), Attributes\Alias::class)->alias
+            ?? Str::snake(class_basename(static::class));
     }
 
     public function getEndpoint(): string
     {
-        return attribute($this->getPayload(), Attributes\Endpoint::class)->endpoint ?? '';
+        return class_attribute($this->getPayload(), Attributes\Endpoint::class)->endpoint ?? '';
     }
 
     public function getMethod(): string
     {
-        return attribute($this->getPayload(), Attributes\Method::class)->method ?? 'POST';
+        return class_attribute($this->getPayload(), Attributes\Method::class)->method ?? 'POST';
     }
 
     /**
@@ -35,7 +36,7 @@ trait PayloadAttributes
      */
     public function getHeaders(): array
     {
-        return attribute($this->getPayload(), Attributes\Headers::class)->headers ?? [];
+        return class_attribute($this->getPayload(), Attributes\Headers::class)->headers ?? [];
     }
 
     /**
@@ -44,7 +45,7 @@ trait PayloadAttributes
     public function getResultType(): string
     {
         /** @var class-string<TResult> */
-        return attribute($this->getPayload(), Attributes\ResultType::class)->type
+        return class_attribute($this->getPayload(), Attributes\ResultType::class)->type
             ?? throw new Exception('ResultType attribute not defined.');
     }
 }
