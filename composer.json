@@ -16,27 +16,27 @@
     ],
     "require": {
         "php": "^8.2",
-        "laravel/framework": "^11.9 || ^12.0",
+        "laravel/framework": "^12.11",
         "php-http/discovery": "^1.9.1",
         "php-http/httplug": "^1.0 || ^2.0",
         "psr/http-client-implementation": "^1.0",
         "psr/http-factory": "^1.0.2",
-        "symfony/uid": "^6.4 || ^7.0",
-        "symfony/validator": "^6.4 || ^7.0"
+        "symfony/uid": "^7.2",
+        "symfony/validator": "^7.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "jms/serializer": "^3.27",
-        "larastan/larastan": "^2.7 || ^3.0",
+        "larastan/larastan": "^3.0",
         "laravel/pint": "^1.13",
         "mockery/mockery": "^1.6",
         "nyholm/psr7": "^1.0",
-        "orchestra/testbench": "^9.0 || ^10.0",
+        "orchestra/testbench": "^10.0",
         "pestphp/pest": "^3.2",
         "pestphp/pest-plugin-laravel": "^3.0",
         "php-http/message": "^1.7",
         "php-http/mock-client": "^1.0",
-        "symfony/serializer": "^6.4 || ^7.0"
+        "symfony/serializer": "^7.2"
     },
     "autoload": {
         "psr-4": {

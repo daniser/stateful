@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace TTBooking\Stateful;
 
-use Illuminate\Support\Collection;
-use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
@@ -13,8 +11,8 @@ use ReflectionObject;
 use ReflectionProperty;
 
 /**
- * Instantiate class without calling its constructor.
- * If class has promoted properties, apply default values from corresponding constructor parameters.
+ * Instantiate a class without calling its constructor.
+ * If a class has promoted properties, apply default values from corresponding constructor parameters.
  *
  * @template T of object
  *
@@ -39,7 +37,7 @@ function entity(string $class): object
 
 /**
  * Check for object completeness.
- * In order to be complete, object must have no uninitialized public properties.
+ * To be complete, an object must have no uninitialized public properties.
  */
 function complete(object $object): bool
 {
@@ -67,7 +65,7 @@ function complete(object $object): bool
 }
 
 /**
- * Get actual type of the specified property.
+ * Get an actual type of the specified property.
  *
  * @param  class-string|object  $objectOrClass
  *
@@ -89,7 +87,7 @@ function property_class(object|string $objectOrClass, string $propertyName): str
 }
 
 /**
- * Get actual return type of the specified method.
+ * Get an actual return type of the specified method.
  *
  * @param  class-string|object  $objectOrClass
  *
@@ -108,43 +106,4 @@ function return_class(object|string $objectOrClass, string $methodName): string
     }
 
     throw new ReflectionException("Method \"$methodName\" has no return type or has more than one return type.");
-}
-
-/**
- * Get specified class attribute(s), optionally following an inheritance chain.
- *
- * @template TTarget of object
- * @template TAttribute of object
- *
- * @param  TTarget|class-string<TTarget>  $objectOrClass
- * @param  class-string<TAttribute>  $attribute
- * @return ($ascend is true ? Collection<class-string<contravariant TTarget>, Collection<int, TAttribute>> : Collection<int, TAttribute>)
- */
-function class_attributes($objectOrClass, string $attribute, bool $ascend = false): Collection
-{
-    $refClass = new ReflectionClass($objectOrClass);
-    $attributes = [];
-
-    do {
-        $attributes[$refClass->name] = collect(array_map(
-            fn (ReflectionAttribute $refAttr) => $refAttr->newInstance(),
-            $refClass->getAttributes($attribute)
-        ));
-    } while ($ascend && false !== $refClass = $refClass->getParentClass());
-
-    return $ascend ? collect($attributes) : reset($attributes);
-}
-
-/**
- * Get a specified class attribute, optionally following an inheritance chain.
- *
- * @template TAttribute of object
- *
- * @param  object|class-string  $objectOrClass
- * @param  class-string<TAttribute>  $attribute
- * @return TAttribute|null
- */
-function class_attribute(object|string $objectOrClass, string $attribute, bool $ascend = false)
-{
-    return class_attributes($objectOrClass, $attribute, $ascend)->flatten()->first();
 }
