@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace TTBooking\Stateful;
 
 use TTBooking\Stateful\Contracts\Query;
+use TTBooking\Stateful\Contracts\QueryPayload;
 use TTBooking\Stateful\Contracts\Result;
+use TTBooking\Stateful\Contracts\ResultPayload;
 use TTBooking\Stateful\Exceptions\ClientException;
 
 class Service implements Contracts\Service
@@ -27,12 +29,11 @@ class Service implements Contracts\Service
     }
 
     /**
-     * @template TResult of Result
-     * @template TQuery of Query<TResult>
+     * @template TResultPayload of ResultPayload
+     * @template TQueryPayload of QueryPayload<TResultPayload>
      *
-     * @phpstan-param TQuery $query
-     *
-     * @phpstan-return TResult
+     * @param  Query<TQueryPayload>  $query
+     * @return Result<TResultPayload>
      *
      * @throws ClientException
      */

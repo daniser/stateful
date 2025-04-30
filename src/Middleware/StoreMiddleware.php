@@ -6,7 +6,9 @@ namespace TTBooking\Stateful\Middleware;
 
 use Closure;
 use TTBooking\Stateful\Contracts\Query;
+use TTBooking\Stateful\Contracts\QueryPayload;
 use TTBooking\Stateful\Contracts\Result;
+use TTBooking\Stateful\Contracts\ResultPayload;
 use TTBooking\Stateful\Contracts\StateFactory;
 use TTBooking\Stateful\Contracts\StateRepository;
 
@@ -15,13 +17,12 @@ class StoreMiddleware
     public function __construct(protected StateFactory $state, protected StateRepository $store) {}
 
     /**
-     * @template TResult of Result
-     * @template TQuery of Query<TResult>
+     * @template TResultPayload of ResultPayload
+     * @template TQueryPayload of QueryPayload<TResultPayload>
      *
-     * @phpstan-param  TQuery $query
-     * @param  Closure(TQuery): TResult  $next
-     *
-     * @phpstan-return TResult
+     * @param  Query<TQueryPayload>  $query
+     * @param  Closure(Query<TQueryPayload>): Result<TResultPayload>  $next
+     * @return Result<TResultPayload>
      */
     public function handle(Query $query, Closure $next): Result
     {

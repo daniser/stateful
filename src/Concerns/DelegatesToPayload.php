@@ -41,7 +41,7 @@ trait DelegatesToPayload
      */
     public function offsetSet($offset, $value): void
     {
-        data_set($this->payload, $offset, $value);
+        data_set($this->payload, $offset, $value); // @phpstan-ignore assign.propertyType
     }
 
     /**
@@ -51,7 +51,7 @@ trait DelegatesToPayload
      */
     public function offsetUnset($offset): void
     {
-        data_forget($this->payload, $offset);
+        data_forget($this->payload, $offset); // @phpstan-ignore assign.propertyType
     }
 
     /**

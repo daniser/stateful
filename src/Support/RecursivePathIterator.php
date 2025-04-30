@@ -8,9 +8,8 @@ use OuterIterator;
 use RecursiveIterator;
 
 /**
- * @template TKey
- *
- * @template-covariant TValue
+ * @template TKey of array-key
+ * @template TValue
  *
  * @implements OuterIterator<TKey, TValue>
  * @implements RecursiveIterator<TKey, TValue>

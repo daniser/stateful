@@ -11,5 +11,14 @@ parameters:
 
     ignoreErrors:
         -
+            identifier: larastan.noEnvCallsOutsideOfConfig
+            path: config/*.php
+        -
+            identifier: trait.unused
+            path: src/Concerns/*.php
+        -
+            identifier: missingType.iterableValue
+            path: src/Facades/*.php
+        -
             message: '#^PHPDoc tag @(return|var) contains generic type Http\\Promise\\Promise<.+?> but interface Http\\Promise\\Promise is not generic\.$#'
             reportUnmatched: false

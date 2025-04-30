@@ -11,7 +11,9 @@ use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
 use TTBooking\Stateful\Contracts\Amender;
 use TTBooking\Stateful\Contracts\Query;
+use TTBooking\Stateful\Contracts\QueryPayload;
 use TTBooking\Stateful\Contracts\Result;
+use TTBooking\Stateful\Contracts\ResultPayload;
 use TTBooking\Stateful\Support\RecursivePathIterator;
 
 class AmendMiddleware
@@ -27,13 +29,12 @@ class AmendMiddleware
     ) {}
 
     /**
-     * @template TResult of Result
-     * @template TQuery of Query<TResult>
+     * @template TResultPayload of ResultPayload
+     * @template TQueryPayload of QueryPayload<TResultPayload>
      *
-     * @phpstan-param  TQuery $query
-     * @param  Closure(TQuery): TResult  $next
-     *
-     * @phpstan-return TResult
+     * @param  Query<TQueryPayload>  $query
+     * @param  Closure(Query<TQueryPayload>): Result<TResultPayload>  $next
+     * @return Result<TResultPayload>
      */
     public function handle(Query $query, Closure $next): Result
     {
@@ -41,7 +42,7 @@ class AmendMiddleware
 
         /** @var RecursivePathIterator<array-key, array<mixed>|object> $iterator */
         $iterator = new RecursiveIteratorIterator(
-            new ParentIterator(new RecursivePathIterator(new RecursiveArrayIterator($result))), // @phpstan-ignore-line
+            new ParentIterator(new RecursivePathIterator(new RecursiveArrayIterator($result))),
             RecursiveIteratorIterator::CHILD_FIRST
         );
 

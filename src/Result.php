@@ -6,14 +6,15 @@ namespace TTBooking\Stateful;
 
 use ArrayAccess;
 use TTBooking\Stateful\Concerns\DelegatesToPayload;
+use TTBooking\Stateful\Contracts\ResultPayload;
 
 /**
- * @template TPayload of object
+ * @template TResultPayload of ResultPayload
  *
  * @implements ArrayAccess<string, mixed>
- * @implements Contracts\Result<TPayload>
+ * @implements Contracts\Result<TResultPayload>
  *
- * @mixin TPayload
+ * @mixin TResultPayload
  */
 class Result implements ArrayAccess, Contracts\Result
 {
@@ -23,7 +24,7 @@ class Result implements ArrayAccess, Contracts\Result
     protected array $context = [];
 
     /**
-     * @phpstan-param TPayload $payload
+     * @phpstan-param TResultPayload $payload
      */
     public function __construct(protected object $payload) {}
 

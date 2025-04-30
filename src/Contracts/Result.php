@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace TTBooking\Stateful\Contracts;
 
 /**
- * @template TPayload of object
+ * @template TResultPayload of ResultPayload = ResultPayload
  */
 interface Result
 {
@@ -21,14 +21,14 @@ interface Result
     public function getContext(): array;
 
     /**
-     * @phpstan-param TPayload $payload
+     * @phpstan-param TResultPayload $payload
      *
      * @return $this
      */
     public function withPayload(object $payload): static;
 
     /**
-     * @phpstan-return TPayload
+     * @phpstan-return TResultPayload
      */
     public function getPayload(): object;
 }

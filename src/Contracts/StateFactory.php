@@ -9,10 +9,11 @@ use TTBooking\Stateful\State;
 interface StateFactory
 {
     /**
-     * @template TResult of Result
+     * @template TResultPayload of ResultPayload
+     * @template TQueryPayload of QueryPayload<TResultPayload>
      *
-     * @phpstan-param Query<TResult> $query
-     * @phpstan-param TResult $result
+     * @param  Query<TQueryPayload>  $query
+     * @param  Result<TResultPayload>  $result
      */
     public function make(Query $query, Result $result, ?string $parentId = null): State;
 }

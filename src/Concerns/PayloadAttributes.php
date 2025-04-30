@@ -7,11 +7,11 @@ namespace TTBooking\Stateful\Concerns;
 use Exception;
 use Illuminate\Support\Str;
 use TTBooking\Stateful\Attributes;
-use TTBooking\Stateful\Contracts\Result;
+use TTBooking\Stateful\Contracts\ResultPayload;
 use function TTBooking\Stateful\class_attribute;
 
 /**
- * @template TResult of Result
+ * @template TResultPayload of ResultPayload
  */
 trait PayloadAttributes
 {
@@ -44,7 +44,7 @@ trait PayloadAttributes
      */
     public function getResultType(): string
     {
-        /** @var class-string<TResult> */
+        /** @var class-string<TResultPayload> */
         return class_attribute($this->getPayload(), Attributes\ResultType::class)->type
             ?? throw new Exception('ResultType attribute not defined.');
     }

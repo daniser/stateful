@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace TTBooking\Stateful\Contracts;
 
 /**
- * @template TPayload of object
- * @template TResult of Result
+ * @template TQueryPayload of QueryPayload = QueryPayload
  */
 interface Query
 {
@@ -29,14 +28,14 @@ interface Query
     public function getContext(): array;
 
     /**
-     * @phpstan-param TPayload $payload
+     * @phpstan-param TQueryPayload $payload
      *
      * @return $this
      */
     public function withPayload(object $payload): static;
 
     /**
-     * @phpstan-return TPayload
+     * @phpstan-return TQueryPayload
      */
     public function getPayload(): object;
 
@@ -52,7 +51,7 @@ interface Query
     public function getHeaders(): array;
 
     /**
-     * @return class-string<TResult>
+     * @return class-string<template-type<TQueryPayload, QueryPayload, 'TResultPayload'>>
      */
     public function getResultType(): string;
 }

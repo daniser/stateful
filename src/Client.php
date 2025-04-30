@@ -71,10 +71,10 @@ class Client implements Contracts\Client, Contracts\SerializesData
     }
 
     /**
-     * @template TResult of Contracts\Result
-     * @template TQuery of Contracts\Query<TResult>
+     * @template TResultPayload of Contracts\ResultPayload
+     * @template TQueryPayload of Contracts\QueryPayload<TResultPayload>
      *
-     * @phpstan-param TQuery $query
+     * @param  Contracts\Query<TQueryPayload>  $query
      */
     protected function makeRequest(Contracts\Query $query): RequestInterface
     {

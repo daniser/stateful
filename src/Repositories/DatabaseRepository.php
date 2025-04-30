@@ -7,6 +7,7 @@ namespace TTBooking\Stateful\Repositories;
 use Illuminate\Database\ConnectionInterface;
 use TTBooking\Stateful\Concerns\HasSerializer;
 use TTBooking\Stateful\Contracts\Query;
+use TTBooking\Stateful\Contracts\QueryPayload;
 use TTBooking\Stateful\Contracts\Result;
 use TTBooking\Stateful\Contracts\Serializer;
 use TTBooking\Stateful\Contracts\SerializesData;
@@ -42,7 +43,7 @@ class DatabaseRepository implements SerializesData, StateRepository
         /**
          * @var \stdClass&object{
          *     id: string,
-         *     type: class-string<Query<Result>>,
+         *     type: class-string<QueryPayload>,
          *     query: string,
          *     result: string,
          *     meta: string,

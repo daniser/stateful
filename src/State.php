@@ -7,10 +7,11 @@ namespace TTBooking\Stateful;
 final readonly class State
 {
     /**
-     * @template TResult of Contracts\Result
+     * @template TResultPayload of Contracts\ResultPayload
+     * @template TQueryPayload of Contracts\QueryPayload<TResultPayload>
      *
-     * @phpstan-param Contracts\Query<TResult> $query
-     * @phpstan-param TResult $result
+     * @param  Contracts\Query<TQueryPayload>  $query
+     * @param  Contracts\Result<TResultPayload>  $result
      */
     public function __construct(
         public string $id,

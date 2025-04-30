@@ -9,12 +9,11 @@ use TTBooking\Stateful\Exceptions\ClientException;
 interface Client
 {
     /**
-     * @template TResult of Result
-     * @template TQuery of Query<TResult>
+     * @template TResultPayload of ResultPayload
+     * @template TQueryPayload of QueryPayload<TResultPayload>
      *
-     * @phpstan-param TQuery $query
-     *
-     * @phpstan-return TResult
+     * @param  Query<TQueryPayload>  $query
+     * @return Result<TResultPayload>
      *
      * @throws ClientException
      */

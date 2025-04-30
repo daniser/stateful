@@ -7,7 +7,9 @@ namespace TTBooking\Stateful;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Arr;
 use TTBooking\Stateful\Contracts\Query;
+use TTBooking\Stateful\Contracts\QueryPayload;
 use TTBooking\Stateful\Contracts\Result;
+use TTBooking\Stateful\Contracts\ResultPayload;
 use TTBooking\Stateful\Exceptions\ClientException;
 
 /**
@@ -18,12 +20,11 @@ class ConnectionManager extends Support\Manager implements Contracts\Client, Con
     protected string $selectorKey = 'stateful.connection';
 
     /**
-     * @template TResult of Result
-     * @template TQuery of Query<TResult>
+     * @template TResultPayload of ResultPayload
+     * @template TQueryPayload of QueryPayload<TResultPayload>
      *
-     * @phpstan-param TQuery $query
-     *
-     * @phpstan-return TResult
+     * @param  Query<TQueryPayload>  $query
+     * @return Result<TResultPayload>
      *
      * @throws ClientException
      */

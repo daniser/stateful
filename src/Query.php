@@ -7,19 +7,19 @@ namespace TTBooking\Stateful;
 use ArrayAccess;
 use TTBooking\Stateful\Concerns\DelegatesToPayload;
 use TTBooking\Stateful\Concerns\PayloadAttributes;
+use TTBooking\Stateful\Contracts\QueryPayload;
 
 /**
- * @template TPayload of object
- * @template TResult of Contracts\Result
+ * @template TQueryPayload of QueryPayload
  *
  * @implements ArrayAccess<string, mixed>
- * @implements Contracts\Query<TPayload, TResult>
+ * @implements Contracts\Query<TQueryPayload>
  *
- * @mixin TPayload
+ * @mixin TQueryPayload
  */
 class Query implements ArrayAccess, Contracts\Query
 {
-    /** @use PayloadAttributes<TResult> */
+    /** @use PayloadAttributes<template-type<TQueryPayload, QueryPayload, 'TResultPayload'>> */
     use DelegatesToPayload, PayloadAttributes;
 
     protected ?string $baseUri = null;
@@ -28,7 +28,7 @@ class Query implements ArrayAccess, Contracts\Query
     protected array $context = [];
 
     /**
-     * @phpstan-param TPayload $payload
+     * @phpstan-param TQueryPayload $payload
      */
     public function __construct(protected object $payload) {}
 
