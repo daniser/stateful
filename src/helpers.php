@@ -68,7 +68,6 @@ function complete(object $object): bool
  * Get an actual type of the specified property.
  *
  * @param  class-string|object  $objectOrClass
- *
  * @return class-string
  *
  * @throws ReflectionException
@@ -90,7 +89,6 @@ function property_class(object|string $objectOrClass, string $propertyName): str
  * Get an actual return type of the specified method.
  *
  * @param  class-string|object  $objectOrClass
- *
  * @return class-string
  *
  * @throws ReflectionException

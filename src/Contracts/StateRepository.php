@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace TTBooking\Stateful\Contracts;
 
-use TTBooking\Stateful\State;
 use TTBooking\Stateful\Exceptions\StateNotFoundException;
+use TTBooking\Stateful\State;
 
 interface StateRepository
 {

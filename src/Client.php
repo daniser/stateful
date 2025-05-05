@@ -46,6 +46,7 @@ class Client implements Contracts\Client, Contracts\SerializesData
         ?StreamFactoryInterface $streamFactory = null,
         ?ValidatorInterface $validator = null,
         ?Contracts\Serializer $serializer = null,
+        protected Contracts\ResultFactory $resultFactory = new ResultFactory,
     ) {
         $this->baseUri = rtrim($baseUri, '/');
         $this->httpClient = $httpClient ?? Psr18ClientDiscovery::find();
@@ -60,11 +61,11 @@ class Client implements Contracts\Client, Contracts\SerializesData
         $query = (clone $query)->withBaseUri($this->baseUri)->withContext($this->defaultContext);
 
         try {
-            return $this->serializer->deserialize(
+            return $this->resultFactory->make($this->serializer->deserialize(
                 (string) $this->httpClient->sendRequest($this->makeRequest($query))->getBody(),
                 $query->getResultType(),
                 $query->getContext(),
-            );
+            ));
         } catch (ClientExceptionInterface $e) {
             throw new ClientException('Query failed.', $e->getCode(), $e);
         }
@@ -90,7 +91,6 @@ class Client implements Contracts\Client, Contracts\SerializesData
      * @template T
      *
      * @param  T  $entity
-     *
      * @return T
      */
     protected function validate(mixed $entity): mixed
