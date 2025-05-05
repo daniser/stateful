@@ -1,7 +1,6 @@
 {
     "preset": "laravel",
     "rules": {
-        "nullable_type_declaration_for_default_null_value": true,
         "single_import_per_statement": {
             "group_to_single_imports": false
         }

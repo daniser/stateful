@@ -28,7 +28,7 @@
         "fakerphp/faker": "^1.23",
         "jms/serializer": "^3.27",
         "larastan/larastan": "^3.0",
-        "laravel/pint": "^1.13",
+        "laravel/pint": "^1.16.1",
         "mockery/mockery": "^1.6",
         "nyholm/psr7": "^1.0",
         "orchestra/testbench": "^10.0",
