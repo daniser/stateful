@@ -98,6 +98,7 @@ abstract class Manager implements Factory
      */
     public function extend(string $driver, Closure $callback): static
     {
+        // @phpstan-ignore nullCoalesce.expr
         $this->customCreators[$driver] = $callback->bindTo($this, $this) ?? $callback;
 
         return $this;
@@ -122,6 +123,7 @@ abstract class Manager implements Factory
         }
 
         if (isset($this->customCreators[$driver])) {
+            // @phpstan-ignore argument.type
             return $this->callCustomCreator($config, $name, $driver);
         } else {
             $method = 'create'.Str::studly($driver).'Driver';

@@ -20,5 +20,22 @@ parameters:
             identifier: missingType.iterableValue
             path: src/Facades/*.php
         -
+            identifier: argument.type
+            path: src/*ServiceProvider.php
+        -
+            identifier: offsetAccess.nonOffsetAccessible
+            message: '#^Cannot access offset ''config'' on Illuminate\\Contracts\\Foundation\\Application\.$#'
+            path: src/*ServiceProvider.php
+        -
+            identifier: offsetAccess.nonOffsetAccessible
+            message: '#^Cannot access offset ''stateful-api.\w+'' on mixed\.$#'
+            path: src/*ServiceProvider.php
+        -
+            identifier: varTag.nativeType
+            path: src/Middleware/AmendMiddleware.php
+        -
+            identifier: argument.type
+            path: src/Middleware/AmendMiddleware.php
+        -
             message: '#^PHPDoc tag @(return|var) contains generic type Http\\Promise\\Promise<.+?> but interface Http\\Promise\\Promise is not generic\.$#'
             reportUnmatched: false

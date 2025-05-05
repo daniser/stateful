@@ -120,7 +120,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
      */
     protected function createRepository(array $config, string $name, ?Contracts\Serializer $serializer): Contracts\StateRepository
     {
-        /** @var Contracts\RepositoryFactory $factory */
+        /** @var Contracts\RepositoryFactory<Contracts\StateRepository> $factory */
         $factory = $this->container->make(Contracts\RepositoryFactory::class);
 
         $repository = $factory->connection($this->getConnectionName($config, 'store', $name));

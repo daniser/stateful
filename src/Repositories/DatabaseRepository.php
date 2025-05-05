@@ -51,17 +51,20 @@ class DatabaseRepository implements SerializesData, StateRepository
          */
         $state = (object) $record;
 
-        /** @var Query<Result> $query */
+        /** @var Query $query */
         $query = $this->serializer->deserialize($state->query, $state->type);
 
         /** @var Result $result */
         $result = $this->serializer->deserialize($state->result, $query->getResultType());
 
+        /** @var array{parent_id?: string} $meta */
+        $meta = json_decode($state->meta, true);
+
         return new State(
             id: $state->id,
             query: $query,
             result: $result,
-            parentId: $state->meta['parent_id'],
+            parentId: $meta['parent_id'] ?? null,
         );
     }
 

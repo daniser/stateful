@@ -26,8 +26,11 @@ class StoreMiddleware
      */
     public function handle(Query $query, Closure $next): Result
     {
+        /** @var string|null $parentId */
+        $parentId = $query->getContext()['parent_state_id'] ?? null;
+
         $this->store->put(
-            $this->state->make($query, $result = $next($query), $query->getContext()['parent_state_id'] ?? null)
+            $this->state->make($query, $result = $next($query), $parentId)
         );
 
         return $result;

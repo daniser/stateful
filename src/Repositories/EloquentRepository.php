@@ -17,6 +17,9 @@ class EloquentRepository implements SerializesData, StateRepository
 
     protected Model $model;
 
+    /**
+     * @param  Model|class-string<Model>  $model
+     */
     public function __construct(Model|string $model = Model::class)
     {
         $this->model = is_string($model) ? new $model : $model;
