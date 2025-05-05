@@ -8,10 +8,13 @@ use Exception;
 use Illuminate\Support\Reflector;
 use Illuminate\Support\Str;
 use TTBooking\Stateful\Attributes;
+use TTBooking\Stateful\Contracts\Query;
 use TTBooking\Stateful\Contracts\ResultPayload;
 
 /**
  * @template TResultPayload of ResultPayload
+ *
+ * @phpstan-require-implements Query
  */
 trait PayloadAttributes
 {
