@@ -49,7 +49,7 @@ class SerializerManager extends Support\Manager implements Contracts\Serializer,
             new SymfonySerializer(
                 self::batchInstantiate($config['normalizers'] ?? []),
                 self::batchInstantiate($config['encoders'] ?? []),
-                $config['context'] ?? [],
+                // $config['context'] ?? [],
             )
         );
     }
