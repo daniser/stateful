@@ -32,12 +32,12 @@ interface Query
      *
      * @return $this
      */
-    public function withPayload(object $payload): static;
+    public function withPayload(QueryPayload $payload): static;
 
     /**
      * @phpstan-return TQueryPayload
      */
-    public function getPayload(): object;
+    public function getPayload(): QueryPayload;
 
     public function getAlias(): string;
 

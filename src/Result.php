@@ -26,7 +26,7 @@ class Result implements ArrayAccess, Contracts\Result
     /**
      * @phpstan-param TResultPayload $payload
      */
-    public function __construct(protected object $payload) {}
+    public function __construct(protected ResultPayload $payload) {}
 
     public function withContext(array $context): static
     {
@@ -40,14 +40,14 @@ class Result implements ArrayAccess, Contracts\Result
         return $this->context;
     }
 
-    public function withPayload(object $payload): static
+    public function withPayload(ResultPayload $payload): static
     {
         $this->payload = $payload;
 
         return $this;
     }
 
-    public function getPayload(): object
+    public function getPayload(): ResultPayload
     {
         return $this->payload;
     }

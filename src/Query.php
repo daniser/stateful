@@ -30,7 +30,7 @@ class Query implements ArrayAccess, Contracts\Query
     /**
      * @phpstan-param TQueryPayload $payload
      */
-    public function __construct(protected object $payload) {}
+    public function __construct(protected QueryPayload $payload) {}
 
     public function withBaseUri(string $baseUri): static
     {
@@ -56,14 +56,14 @@ class Query implements ArrayAccess, Contracts\Query
         return $this->context;
     }
 
-    public function withPayload(object $payload): static
+    public function withPayload(QueryPayload $payload): static
     {
         $this->payload = $payload;
 
         return $this;
     }
 
-    public function getPayload(): object
+    public function getPayload(): QueryPayload
     {
         return $this->payload;
     }

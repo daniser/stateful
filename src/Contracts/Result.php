@@ -25,10 +25,10 @@ interface Result
      *
      * @return $this
      */
-    public function withPayload(object $payload): static;
+    public function withPayload(ResultPayload $payload): static;
 
     /**
      * @phpstan-return TResultPayload
      */
-    public function getPayload(): object;
+    public function getPayload(): ResultPayload;
 }
