@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TTBooking\Stateful;
 
+use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -14,7 +15,9 @@ class StatefulApiServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerRoutes();
+        if (! ($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
+            $this->registerRoutes();
+        }
 
         if ($this->app->runningInConsole()) {
             $this->offerPublishing();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TTBooking\Stateful\Facades;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Facade;
 use TTBooking\Stateful\Contracts\Query;
 use TTBooking\Stateful\Contracts\Result;
@@ -18,6 +19,7 @@ use TTBooking\Stateful\State;
  * @method static bool has(string $id)
  * @method static State get(string $id)
  * @method static State put(State $state)
+ * @method static Query newQuery(string $query, Request $request = null)
  *
  * @see \TTBooking\Stateful\ServiceManager
  */

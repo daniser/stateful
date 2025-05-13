@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TTBooking\Stateful;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Http\Request;
 use TTBooking\Stateful\Contracts\Query;
 use TTBooking\Stateful\Contracts\QueryPayload;
 use TTBooking\Stateful\Contracts\Result;
@@ -58,6 +59,11 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
         return $this->service()->put($state);
     }
 
+    public function newQuery(string $query, ?Request $request = null): Query
+    {
+        return $this->service()->newQuery($query, $request);
+    }
+
     public function service(?string $name = null): Contracts\Service
     {
         return $this->connection($name);
@@ -78,6 +84,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
             $serializer = $this->createSerializer($config, $name),
             $this->createClient($config, $name, $serializer),
             $this->createRepository($config, $name, $serializer),
+            $this->container,
         );
     }
 
