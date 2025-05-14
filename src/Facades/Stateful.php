@@ -19,7 +19,7 @@ use TTBooking\Stateful\State;
  * @method static bool has(string $id)
  * @method static State get(string $id)
  * @method static State put(State $state)
- * @method static Query newQuery(string $query, Request $request = null)
+ * @method static Query newQuery(string $type, Request $request = null)
  *
  * @see \TTBooking\Stateful\ServiceManager
  */
