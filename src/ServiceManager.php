@@ -59,9 +59,9 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
         return $this->service()->put($state);
     }
 
-    public function newQuery(string $query, ?Request $request = null): Query
+    public function newQuery(string $type, ?Request $request = null): Query
     {
-        return $this->service()->newQuery($query, $request);
+        return $this->service()->newQuery($type, $request);
     }
 
     public function service(?string $name = null): Contracts\Service

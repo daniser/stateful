@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace TTBooking\Stateful\Exceptions;
 
-use RuntimeException;
+use Illuminate\Database\RecordNotFoundException;
 
-class StateNotFoundException extends RuntimeException {}
+class StateNotFoundException extends RecordNotFoundException {}
