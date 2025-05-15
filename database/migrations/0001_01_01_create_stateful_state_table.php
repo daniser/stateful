@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('stateful_state', static function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('type');
+            $table->string('service')->index();
+            $table->string('type')->index();
             $table->json('query');
             $table->json('result');
             $table->timestamp('created_at')->useCurrent();

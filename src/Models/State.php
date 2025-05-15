@@ -8,14 +8,15 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use TTBooking\Stateful\Casts\Query;
 use TTBooking\Stateful\Casts\Result;
-use TTBooking\Stateful\Contracts\QueryPayload;
-use TTBooking\Stateful\Contracts\ResultPayload;
+use TTBooking\Stateful\Contracts\Query as QueryContract;
+use TTBooking\Stateful\Contracts\Result as ResultContract;
 
 /**
  * @property string $id
+ * @property string $service
  * @property string $type
- * @property QueryPayload $query
- * @property ResultPayload $result
+ * @property QueryContract $query
+ * @property ResultContract $result
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */

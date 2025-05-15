@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace TTBooking\Stateful\Repositories;
 
-use TTBooking\Stateful\Concerns\HasSerializer;
-use TTBooking\Stateful\Contracts\SerializesData;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use TTBooking\Stateful\Contracts\StateRepository;
 use TTBooking\Stateful\Exceptions\StateNotFoundException;
 use TTBooking\Stateful\Models\State as Model;
 use TTBooking\Stateful\State;
 
-class EloquentRepository implements SerializesData, StateRepository
+class EloquentRepository implements StateRepository
 {
-    use HasSerializer;
-
     protected Model $model;
 
     /**
@@ -32,14 +29,22 @@ class EloquentRepository implements SerializesData, StateRepository
 
     public function get(string $id): State
     {
-        // TODO: Implement get() method.
+        try {
+            $model = $this->model->newQuery()->findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            throw new StateNotFoundException("State [$id] not found.", $e->getCode(), $e);
+        }
 
-        throw new StateNotFoundException;
+        return new State($id, $model->query, $model->result);
     }
 
     public function put(State $state): State
     {
-        // TODO: Implement put() method.
+        $this->model->newQuery()->forceCreate([
+            'id' => $state->id,
+            'query' => $state->query,
+            'result' => $state->result,
+        ]);
 
         return $state;
     }
