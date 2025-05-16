@@ -18,10 +18,15 @@ use TTBooking\Stateful\Contracts\ResultPayload;
  */
 trait PayloadAttributes
 {
+    public static function getAliasFor(string $payloadClass): string
+    {
+        return Reflector::getClassAttribute($payloadClass, Attributes\Alias::class)->alias
+            ?? Str::snake(class_basename($payloadClass));
+    }
+
     public function getAlias(): string
     {
-        return Reflector::getClassAttribute($this->getPayload(), Attributes\Alias::class)->alias
-            ?? Str::snake(class_basename(static::class));
+        return static::getAliasFor(get_class($this->getPayload()));
     }
 
     public function getEndpoint(): string
@@ -45,10 +50,18 @@ trait PayloadAttributes
     /**
      * @throws Exception
      */
+    public static function getResultTypeFor(string $payloadClass): string
+    {
+        return Reflector::getClassAttribute($payloadClass, Attributes\ResultType::class)->type
+            ?? throw new Exception('ResultType attribute not defined.');
+    }
+
+    /**
+     * @throws Exception
+     */
     public function getResultType(): string
     {
         /** @var class-string<TResultPayload> */
-        return Reflector::getClassAttribute($this->getPayload(), Attributes\ResultType::class)->type
-            ?? throw new Exception('ResultType attribute not defined.');
+        return static::getResultTypeFor(get_class($this->getPayload()));
     }
 }

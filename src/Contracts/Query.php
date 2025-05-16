@@ -39,6 +39,11 @@ interface Query
      */
     public function getPayload(): QueryPayload;
 
+    /**
+     * @param  class-string<QueryPayload>  $payloadClass
+     */
+    public static function getAliasFor(string $payloadClass): string;
+
     public function getAlias(): string;
 
     public function getEndpoint(): string;
@@ -49,6 +54,14 @@ interface Query
      * @return array<string, string>
      */
     public function getHeaders(): array;
+
+    /**
+     * @template TResultPayload of ResultPayload
+     *
+     * @param  class-string<QueryPayload<TResultPayload>>  $payloadClass
+     * @return class-string<TResultPayload>
+     */
+    public static function getResultTypeFor(string $payloadClass): string;
 
     /**
      * @return class-string<template-type<TQueryPayload, QueryPayload, 'TResultPayload'>>

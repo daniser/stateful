@@ -6,6 +6,7 @@ namespace TTBooking\Stateful;
 
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use TTBooking\Stateful\Contracts\Query;
 use TTBooking\Stateful\Contracts\QueryPayload;
@@ -13,15 +14,25 @@ use TTBooking\Stateful\Contracts\Result;
 use TTBooking\Stateful\Contracts\ResultPayload;
 use TTBooking\Stateful\Exceptions\ClientException;
 use TTBooking\Stateful\Exceptions\UnknownQueryTypeException;
+use TTBooking\Stateful\Query as ConcreteQuery;
 
 class Service implements Contracts\Service
 {
+    /** @var array<string, class-string<QueryPayload>> */
+    private array $queryMap;
+
+    /**
+     * @param  array<array-key, class-string<QueryPayload>>  $queryPayloadClasses
+     */
     public function __construct(
         protected Contracts\Serializer $serializer,
         protected Contracts\Client $client,
         protected Contracts\StateRepository $store,
         protected Container $container,
-    ) {}
+        array $queryPayloadClasses = [],
+    ) {
+        $this->queryMap = self::buildQueryMap($queryPayloadClasses);
+    }
 
     public function serialize(mixed $data, array $context = []): string
     {
@@ -69,5 +80,33 @@ class Service implements Contracts\Service
 
         /** @var Query */
         return $this->container->call($this->$method(...));
+    }
+
+    public function resolveQueryPayloadClass(string $alias): string
+    {
+        return $this->queryMap[$alias] ?? throw new UnknownQueryTypeException("Unknown query type [$alias].");
+    }
+
+    public function resolveResultPayloadClass(string $alias): string
+    {
+        return ConcreteQuery::getResultTypeFor($this->resolveQueryPayloadClass($alias));
+    }
+
+    /**
+     * @param  array<array-key, class-string<QueryPayload>>  $queryPayloadClasses
+     * @return array<string, class-string<QueryPayload>>
+     */
+    private static function buildQueryMap(array $queryPayloadClasses): array
+    {
+        if (! array_is_list($queryPayloadClasses)) {
+            /** @var array<string, class-string<QueryPayload>> */
+            return $queryPayloadClasses;
+        }
+
+        /** @var array<string, class-string<QueryPayload>> */
+        return Arr::mapWithKeys(
+            $queryPayloadClasses,
+            static fn (string $class) => [ConcreteQuery::getAliasFor($class) => $class]
+        );
     }
 }

@@ -25,11 +25,13 @@ class Query implements CastsAttributes
 
     /**
      * @param  string  $value
-     * @param  array{service?: string}  $attributes
+     * @param  array{service?: string, type: string}  $attributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): ?QueryContract
     {
-        return $this->serializer($attributes)->deserialize($value, QueryContract::class, $this->context);
+        $type = Stateful::service($attributes['service'] ?? null)->resolveQueryPayloadClass($attributes['type']);
+
+        return $this->serializer($attributes)->deserialize($value, $type, $this->context);
     }
 
     /**

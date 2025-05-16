@@ -20,6 +20,8 @@ use TTBooking\Stateful\State;
  * @method static State get(string $id)
  * @method static State put(State $state)
  * @method static Query newQuery(string $type, Request $request = null)
+ * @method static string resolveQueryPayloadClass(string $alias)
+ * @method static string resolveResultPayloadClass(string $alias)
  *
  * @see \TTBooking\Stateful\ServiceManager
  */

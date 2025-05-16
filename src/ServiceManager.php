@@ -64,6 +64,16 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
         return $this->service()->newQuery($type, $request);
     }
 
+    public function resolveQueryPayloadClass(string $alias): string
+    {
+        return $this->service()->resolveQueryPayloadClass($alias);
+    }
+
+    public function resolveResultPayloadClass(string $alias): string
+    {
+        return $this->service()->resolveResultPayloadClass($alias);
+    }
+
     public function service(?string $name = null): Contracts\Service
     {
         return $this->connection($name);
@@ -71,9 +81,10 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
 
     /**
      * @param  array{
-     *     serializer: array<string, mixed>|string|null,
-     *     connection: array<string, mixed>|string|null,
-     *     store: array<string, mixed>|string|null,
+     *     serializer?: array<string, mixed>|string,
+     *     connection?: array<string, mixed>|string,
+     *     store?: array<string, mixed>|string,
+     *     query_payload_classes?: array<array-key, class-string<QueryPayload>>,
      * }  $config
      *
      * @throws BindingResolutionException
@@ -85,11 +96,12 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
             $this->createClient($config, $name, $serializer),
             $this->createRepository($config, $name, $serializer),
             $this->container,
+            $config['query_payload_classes'] ?? [],
         );
     }
 
     /**
-     * @param  array{serializer: array<string, mixed>|string|null}  $config
+     * @param  array{serializer?: array<string, mixed>|string}  $config
      *
      * @throws BindingResolutionException
      */
@@ -102,7 +114,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
     }
 
     /**
-     * @param  array{connection: array<string, mixed>|string|null}  $config
+     * @param  array{connection?: array<string, mixed>|string}  $config
      *
      * @throws BindingResolutionException
      */
@@ -121,7 +133,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
     }
 
     /**
-     * @param  array{store: array<string, mixed>|string|null}  $config
+     * @param  array{store?: array<string, mixed>|string}  $config
      *
      * @throws BindingResolutionException
      */

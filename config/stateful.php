@@ -19,6 +19,7 @@ return [
             'connection' => 'default',
             'serializer' => 'symfony',
             'store' => 'eloquent', // 'null'
+            'query_payload_classes' => [],
         ],
 
     ],
