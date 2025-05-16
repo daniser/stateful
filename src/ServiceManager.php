@@ -8,6 +8,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use TTBooking\Stateful\Contracts\Query;
 use TTBooking\Stateful\Contracts\QueryPayload;
+use TTBooking\Stateful\Contracts\ResolvesAliases;
 use TTBooking\Stateful\Contracts\Result;
 use TTBooking\Stateful\Contracts\ResultPayload;
 use TTBooking\Stateful\Contracts\SerializesData;
@@ -28,6 +29,16 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
     public function deserialize(string $data, string $type, array $context = []): object
     {
         return $this->service()->deserialize($data, $type, $context);
+    }
+
+    public function resolveQueryPayloadClass(string $alias): string
+    {
+        return $this->service()->resolveQueryPayloadClass($alias);
+    }
+
+    public function resolveResultPayloadClass(string $alias): string
+    {
+        return $this->service()->resolveResultPayloadClass($alias);
     }
 
     /**
@@ -64,16 +75,6 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
         return $this->service()->newQuery($type, $request);
     }
 
-    public function resolveQueryPayloadClass(string $alias): string
-    {
-        return $this->service()->resolveQueryPayloadClass($alias);
-    }
-
-    public function resolveResultPayloadClass(string $alias): string
-    {
-        return $this->service()->resolveResultPayloadClass($alias);
-    }
-
     public function service(?string $name = null): Contracts\Service
     {
         return $this->connection($name);
@@ -93,10 +94,10 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
     {
         return new Service(
             $serializer = $this->createSerializer($config, $name),
+            $aliasResolver = $this->createAliasResolver($config, $name),
             $this->createClient($config, $name, $serializer),
-            $this->createRepository($config, $name, $serializer),
+            $this->createRepository($config, $name, $serializer, $aliasResolver),
             $this->container,
-            $config['query_payload_classes'] ?? [],
         );
     }
 
@@ -111,6 +112,14 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
         $factory = $this->container->make(Contracts\SerializerFactory::class);
 
         return $factory->serializer($this->getConnectionName($config, 'serializer', $name));
+    }
+
+    /**
+     * @param  array{query_payload_classes?: array<array-key, class-string<QueryPayload>>}  $config
+     */
+    protected function createAliasResolver(array $config, string $name): Contracts\AliasResolver
+    {
+        return new AliasResolver($config['query_payload_classes'] ?? []);
     }
 
     /**
@@ -137,15 +146,23 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
      *
      * @throws BindingResolutionException
      */
-    protected function createRepository(array $config, string $name, ?Contracts\Serializer $serializer): Contracts\StateRepository
-    {
+    protected function createRepository(
+        array $config,
+        string $name,
+        ?Contracts\Serializer $serializer,
+        ?Contracts\AliasResolver $aliasResolver,
+    ): Contracts\StateRepository {
         /** @var Contracts\RepositoryFactory<Contracts\StateRepository> $factory */
         $factory = $this->container->make(Contracts\RepositoryFactory::class);
 
-        $repository = $factory->connection($this->getConnectionName($config, 'store', $name));
+        $repository = clone $factory->connection($this->getConnectionName($config, 'store', $name));
 
         if ($serializer && $repository instanceof SerializesData) {
-            return (clone $repository)->setSerializer($serializer);
+            $repository->setSerializer($serializer);
+        }
+
+        if ($aliasResolver && $repository instanceof ResolvesAliases) {
+            $repository->setAliasResolver($aliasResolver);
         }
 
         return $repository;

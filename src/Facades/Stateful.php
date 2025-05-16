@@ -16,12 +16,12 @@ use TTBooking\Stateful\State;
  * @method static Result query(Query $query)
  * @method static string serialize(mixed $data, array $context = [])
  * @method static object deserialize(string $data, string $type, array $context = [])
+ * @method static string resolveQueryPayloadClass(string $alias)
+ * @method static string resolveResultPayloadClass(string $alias)
  * @method static bool has(string $id)
  * @method static State get(string $id)
  * @method static State put(State $state)
  * @method static Query newQuery(string $type, Request $request = null)
- * @method static string resolveQueryPayloadClass(string $alias)
- * @method static string resolveResultPayloadClass(string $alias)
  *
  * @see \TTBooking\Stateful\ServiceManager
  */

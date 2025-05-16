@@ -6,6 +6,7 @@ namespace TTBooking\Stateful\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use TTBooking\Stateful\Contracts\AliasResolver;
 use TTBooking\Stateful\Contracts\Query as QueryContract;
 use TTBooking\Stateful\Contracts\Serializer;
 use TTBooking\Stateful\Facades\Stateful;
@@ -29,9 +30,10 @@ class Query implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): ?QueryContract
     {
-        $type = Stateful::service($attributes['service'] ?? null)->resolveQueryPayloadClass($attributes['type']);
+        $service = $this->service($attributes);
+        $type = $service->resolveQueryPayloadClass($attributes['type']);
 
-        return $this->serializer($attributes)->deserialize($value, $type, $this->context);
+        return $service->deserialize($value, $type, $this->context);
     }
 
     /**
@@ -41,16 +43,18 @@ class Query implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): array
     {
+        $service = $this->service($attributes);
+
         return [
-            'type' => $value->getAlias(),
-            'query' => $this->serializer($attributes)->serialize($value, $this->context),
+            'type' => $service->getAliasFor($value), // $value->getAlias(),
+            'query' => $service->serialize($value, $this->context),
         ];
     }
 
     /**
      * @param  array{service?: string}  $attributes
      */
-    protected function serializer(array $attributes): Serializer
+    protected function service(array $attributes): AliasResolver&Serializer
     {
         return Stateful::service($attributes['service'] ?? null);
     }
