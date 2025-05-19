@@ -9,16 +9,13 @@ use TTBooking\Stateful\Exceptions\UnknownQueryTypeException;
 interface AliasResolver
 {
     /**
-     * @return class-string<QueryPayload>
+     * @template TAlias of non-empty-string
+     *
+     * @phpstan-param TAlias $alias
+     *
+     * @return class-string<QueryPayload<TAlias>>
      *
      * @throws UnknownQueryTypeException
      */
-    public function resolveQueryPayloadClass(string $alias): string;
-
-    /**
-     * @return class-string<ResultPayload>
-     *
-     * @throws UnknownQueryTypeException
-     */
-    public function resolveResultPayloadClass(string $alias): string;
+    public function resolveAlias(string $alias): string;
 }

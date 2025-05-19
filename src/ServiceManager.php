@@ -31,14 +31,9 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
         return $this->service()->deserialize($data, $type, $context);
     }
 
-    public function resolveQueryPayloadClass(string $alias): string
+    public function resolveAlias(string $alias): string
     {
-        return $this->service()->resolveQueryPayloadClass($alias);
-    }
-
-    public function resolveResultPayloadClass(string $alias): string
-    {
-        return $this->service()->resolveResultPayloadClass($alias);
+        return $this->service()->resolveAlias($alias);
     }
 
     /**

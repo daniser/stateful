@@ -34,14 +34,9 @@ class Service implements Contracts\Service
         return $this->serializer->deserialize($data, $type, $context);
     }
 
-    public function resolveQueryPayloadClass(string $alias): string
+    public function resolveAlias(string $alias): string
     {
-        return $this->aliasResolver->resolveQueryPayloadClass($alias);
-    }
-
-    public function resolveResultPayloadClass(string $alias): string
-    {
-        return $this->aliasResolver->resolveResultPayloadClass($alias);
+        return $this->aliasResolver->resolveAlias($alias);
     }
 
     /**

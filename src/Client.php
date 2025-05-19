@@ -63,7 +63,7 @@ class Client implements Contracts\Client, Contracts\SerializesData
         try {
             return $this->resultFactory->make($this->serializer->deserialize(
                 (string) $this->httpClient->sendRequest($this->makeRequest($query))->getBody(),
-                $query->getResultType(),
+                $query->getPayload()::getResultPayloadType(),
                 $query->getContext(),
             ));
         } catch (ClientExceptionInterface $e) {

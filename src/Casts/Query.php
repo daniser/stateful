@@ -31,7 +31,7 @@ class Query implements CastsAttributes
     public function get(Model $model, string $key, mixed $value, array $attributes): ?QueryContract
     {
         $service = $this->service($attributes);
-        $type = $service->resolveQueryPayloadClass($attributes['type']);
+        $type = $service->resolveAlias($attributes['type']);
 
         return $service->deserialize($value, $type, $this->context);
     }
@@ -44,10 +44,11 @@ class Query implements CastsAttributes
     public function set(Model $model, string $key, mixed $value, array $attributes): array
     {
         $service = $this->service($attributes);
+        $payload = $value->getPayload();
 
         return [
-            'type' => $service->getAliasFor($value), // $value->getAlias(),
-            'query' => $service->serialize($value, $this->context),
+            'type' => $payload::getAlias(),
+            'query' => $service->serialize($payload, $this->context),
         ];
     }
 
