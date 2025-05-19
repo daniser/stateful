@@ -7,6 +7,8 @@ namespace TTBooking\Stateful\Concerns;
 use Exception;
 use Illuminate\Support\Reflector;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\TypeResolver;
+use phpDocumentor\Reflection\Types\ContextFactory;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprStringNode;
 use PHPStan\PhpDocParser\Ast\Type\ConstTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -74,8 +76,13 @@ trait Attributes
             $phpDocNode = $phpDocParser->parse($tokens);
             $implementsTags = $phpDocNode->getImplementsTagValues();
 
+            $context = (new ContextFactory)->createFromReflector($refClass);
+            $typeResolver = new TypeResolver;
+
             foreach ($implementsTags as $implementsTag) {
-                if ($implementsTag->type->type->name !== 'QueryPayload') {
+                $interface = $typeResolver->resolve($implementsTag->type->type->name, $context);
+
+                if (! is_a($interface, QueryPayload::class, true)) {
                     continue;
                 }
 
@@ -89,7 +96,7 @@ trait Attributes
                 }
 
                 if (isset($genericTypes[1]) && $genericTypes[1] instanceof IdentifierTypeNode) {
-                    $resultPayloadType = $genericTypes[1]->name;
+                    $resultPayloadType = $typeResolver->resolve($genericTypes[1]->name, $context);
                 }
             }
         }
