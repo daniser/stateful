@@ -80,7 +80,7 @@ trait Attributes
             $typeResolver = new TypeResolver;
 
             foreach ($implementsTags as $implementsTag) {
-                $interface = $typeResolver->resolve($implementsTag->type->type->name, $context);
+                $interface = (string) $typeResolver->resolve($implementsTag->type->type->name, $context);
 
                 if (! is_a($interface, QueryPayload::class, true)) {
                     continue;
@@ -96,7 +96,10 @@ trait Attributes
                 }
 
                 if (isset($genericTypes[1]) && $genericTypes[1] instanceof IdentifierTypeNode) {
-                    $resultPayloadType = $typeResolver->resolve($genericTypes[1]->name, $context);
+                    $resultPayloadType = (string) $typeResolver->resolve($genericTypes[1]->name, $context);
+                    if (! is_subclass_of($resultPayloadType, ResultPayload::class)) {
+                        // TODO: throw
+                    }
                 }
             }
         }
