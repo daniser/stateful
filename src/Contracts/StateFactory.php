@@ -10,7 +10,7 @@ interface StateFactory
 {
     /**
      * @template TResultPayload of ResultPayload
-     * @template TQueryPayload of QueryPayload<TResultPayload>
+     * @template TQueryPayload of QueryPayload<non-empty-string, TResultPayload>
      *
      * @param  Query<TQueryPayload>  $query
      * @param  Result<TResultPayload>  $result

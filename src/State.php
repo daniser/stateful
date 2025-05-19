@@ -8,7 +8,7 @@ final readonly class State
 {
     /**
      * @template TResultPayload of Contracts\ResultPayload
-     * @template TQueryPayload of Contracts\QueryPayload<TResultPayload>
+     * @template TQueryPayload of Contracts\QueryPayload<non-empty-string, TResultPayload>
      *
      * @param  Contracts\Query<TQueryPayload>  $query
      * @param  Contracts\Result<TResultPayload>  $result

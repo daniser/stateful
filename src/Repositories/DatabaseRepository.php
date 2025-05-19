@@ -47,7 +47,7 @@ class DatabaseRepository implements ResolvesAliases, SerializesData, StateReposi
         /**
          * @var \stdClass&object{
          *     id: string,
-         *     type: string,
+         *     type: non-empty-string,
          *     query: string,
          *     result: string,
          *     meta: string,
@@ -55,13 +55,13 @@ class DatabaseRepository implements ResolvesAliases, SerializesData, StateReposi
          */
         $state = (object) $record;
 
-        $queryPayloadClass = $this->aliasResolver->resolveQueryPayloadClass($state->type);
+        $queryPayloadClass = $this->aliasResolver->resolveAlias($state->type);
 
         /** @var Query $query */
         $query = $this->serializer->deserialize($state->query, $queryPayloadClass);
 
         /** @var Result $result */
-        $result = $this->serializer->deserialize($state->result, $query->getResultType());
+        $result = $this->serializer->deserialize($state->result, $queryPayloadClass::getResultPayloadType());
 
         /** @var array{parent_id?: string} $meta */
         $meta = json_decode($state->meta, true);

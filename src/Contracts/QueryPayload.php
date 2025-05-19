@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace TTBooking\Stateful\Contracts;
 
 /**
- * @template TAlias of non-empty-string
+ * @template TAlias of non-empty-string = non-empty-string
  * @template TResultPayload of ResultPayload = ResultPayload
  */
 interface QueryPayload

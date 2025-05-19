@@ -21,7 +21,7 @@ class ConnectionManager extends Support\Manager implements Contracts\Client, Con
 
     /**
      * @template TResultPayload of ResultPayload
-     * @template TQueryPayload of QueryPayload<TResultPayload>
+     * @template TQueryPayload of QueryPayload<non-empty-string, TResultPayload>
      *
      * @param  Query<TQueryPayload>  $query
      * @return Result<TResultPayload>

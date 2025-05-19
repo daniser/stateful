@@ -10,6 +10,7 @@ use TTBooking\Stateful\Contracts\AliasResolver;
 use TTBooking\Stateful\Contracts\Query as QueryContract;
 use TTBooking\Stateful\Contracts\Serializer;
 use TTBooking\Stateful\Facades\Stateful;
+use TTBooking\Stateful\Query as QueryImpl;
 
 /**
  * @implements CastsAttributes<QueryContract, QueryContract>
@@ -26,14 +27,14 @@ class Query implements CastsAttributes
 
     /**
      * @param  string  $value
-     * @param  array{service?: string, type: string}  $attributes
+     * @param  array{service?: string, type: non-empty-string}  $attributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): ?QueryContract
     {
         $service = $this->service($attributes);
         $type = $service->resolveAlias($attributes['type']);
 
-        return $service->deserialize($value, $type, $this->context);
+        return new QueryImpl($service->deserialize($value, $type, $this->context));
     }
 
     /**

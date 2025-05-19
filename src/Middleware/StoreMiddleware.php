@@ -18,7 +18,7 @@ class StoreMiddleware
 
     /**
      * @template TResultPayload of ResultPayload
-     * @template TQueryPayload of QueryPayload<TResultPayload>
+     * @template TQueryPayload of QueryPayload<non-empty-string, TResultPayload>
      *
      * @param  Query<TQueryPayload>  $query
      * @param  Closure(Query<TQueryPayload>): Result<TResultPayload>  $next
