@@ -101,7 +101,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
      *
      * @throws BindingResolutionException
      */
-    protected function createSerializer(array $config, string $name): Contracts\Serializer
+    public function createSerializer(array $config, string $name): Contracts\Serializer
     {
         /** @var Contracts\SerializerFactory $factory */
         $factory = $this->container->make(Contracts\SerializerFactory::class);
@@ -112,7 +112,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
     /**
      * @param  array{query_payload_classes?: array<array-key, class-string<QueryPayload>>}  $config
      */
-    protected function createAliasResolver(array $config, string $name): Contracts\AliasResolver
+    public function createAliasResolver(array $config, string $name): Contracts\AliasResolver
     {
         return new AliasResolver($config['query_payload_classes'] ?? []);
     }
@@ -122,7 +122,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
      *
      * @throws BindingResolutionException
      */
-    protected function createClient(array $config, string $name, ?Contracts\Serializer $serializer): Contracts\Client
+    public function createClient(array $config, string $name, ?Contracts\Serializer $serializer): Contracts\Client
     {
         /** @var Contracts\ClientFactory $factory */
         $factory = $this->container->make(Contracts\ClientFactory::class);
@@ -141,7 +141,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
      *
      * @throws BindingResolutionException
      */
-    protected function createRepository(
+    public function createRepository(
         array $config,
         string $name,
         ?Contracts\Serializer $serializer,
