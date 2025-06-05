@@ -44,7 +44,9 @@ class ExtendedClient implements Contracts\Client, SerializesData
 
     public function setSerializer(Serializer $serializer): static
     {
-        $this->client->setSerializer($serializer);
+        if ($this->client instanceof SerializesData) {
+            $this->client->setSerializer($serializer);
+        }
 
         return $this;
     }
