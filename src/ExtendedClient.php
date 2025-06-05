@@ -9,9 +9,11 @@ use TTBooking\Stateful\Contracts\Query;
 use TTBooking\Stateful\Contracts\QueryPayload;
 use TTBooking\Stateful\Contracts\Result;
 use TTBooking\Stateful\Contracts\ResultPayload;
+use TTBooking\Stateful\Contracts\Serializer;
+use TTBooking\Stateful\Contracts\SerializesData;
 use TTBooking\Stateful\Exceptions\ClientException;
 
-class ExtendedClient implements Contracts\Client
+class ExtendedClient implements Contracts\Client, SerializesData
 {
     /**
      * @param  list<class-string>  $middleware
@@ -38,6 +40,13 @@ class ExtendedClient implements Contracts\Client
             ->send($query)
             ->through($this->middleware)
             ->then($this->client->query(...));
+    }
+
+    public function setSerializer(Serializer $serializer): static
+    {
+        $this->client->setSerializer($serializer);
+
+        return $this;
     }
 
     /**
