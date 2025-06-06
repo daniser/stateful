@@ -16,8 +16,7 @@ interface Serializer
      *
      * @param  class-string<T>  $type
      * @param  array<string, mixed>  $context
-     *
-     * @phpstan-return T
+     * @return T
      */
     public function deserialize(string $data, string $type, array $context = []): object;
 }

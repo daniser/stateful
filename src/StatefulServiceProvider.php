@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace TTBooking\Stateful;
 
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Support\DeferrableProvider;
-use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\ServiceProvider;
 use TTBooking\Stateful\Middleware\AmendMiddleware;
 

@@ -33,7 +33,7 @@ use TTBooking\Stateful\Contracts\ResultPayload;
 trait Attributes
 {
     /**
-     * @phpstan-return TAlias
+     * @return TAlias
      */
     public static function getAlias(): string
     {

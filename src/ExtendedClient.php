@@ -21,7 +21,7 @@ use TTBooking\Stateful\Exceptions\ClientException;
 class ExtendedClient implements Contracts\Client, SerializesData
 {
     /**
-     * @phpstan-param TClient $client
+     * @param  TClient  $client
      * @param  list<class-string>  $middleware
      */
     public function __construct(

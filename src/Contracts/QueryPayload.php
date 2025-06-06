@@ -11,7 +11,7 @@ namespace TTBooking\Stateful\Contracts;
 interface QueryPayload
 {
     /**
-     * @phpstan-return TAlias
+     * @return TAlias
      */
     public static function getAlias(): string;
 

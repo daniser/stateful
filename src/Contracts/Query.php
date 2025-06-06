@@ -28,14 +28,13 @@ interface Query
     public function getContext(): array;
 
     /**
-     * @phpstan-param TQueryPayload $payload
-     *
+     * @param  TQueryPayload  $payload
      * @return $this
      */
     public function withPayload(QueryPayload $payload): static;
 
     /**
-     * @phpstan-return TQueryPayload
+     * @return TQueryPayload
      */
     public function getPayload(): QueryPayload;
 

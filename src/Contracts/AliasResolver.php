@@ -11,8 +11,7 @@ interface AliasResolver
     /**
      * @template TAlias of non-empty-string
      *
-     * @phpstan-param TAlias $alias
-     *
+     * @param  TAlias  $alias
      * @return class-string<QueryPayload<TAlias>>
      *
      * @throws UnknownQueryTypeException

@@ -17,8 +17,7 @@ use ReflectionProperty;
  * @template T of object
  *
  * @param  class-string<T>  $class
- *
- * @phpstan-return T
+ * @return T
  */
 function entity(string $class): object
 {

@@ -19,9 +19,8 @@ interface StateRepository
     /**
      * @template TState of State
      *
-     * @phpstan-param TState $state
-     *
-     * @phpstan-return TState
+     * @param  TState  $state
+     * @return TState
      */
     public function put(State $state): State;
 }

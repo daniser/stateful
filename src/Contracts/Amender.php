@@ -10,7 +10,7 @@ namespace TTBooking\Stateful\Contracts;
 interface Amender
 {
     /**
-     * @phpstan-param TItem $item
+     * @param  TItem  $item
      */
     public function amend(object $item, string|int $key, object $entity, string $path): void;
 }

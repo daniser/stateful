@@ -28,7 +28,7 @@ class Query implements ArrayAccess, Contracts\Query
     protected array $context = [];
 
     /**
-     * @phpstan-param TQueryPayload $payload
+     * @param  TQueryPayload  $payload
      */
     public function __construct(protected QueryPayload $payload) {}
 

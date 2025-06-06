@@ -21,14 +21,13 @@ interface Result
     public function getContext(): array;
 
     /**
-     * @phpstan-param TResultPayload $payload
-     *
+     * @param  TResultPayload  $payload
      * @return $this
      */
     public function withPayload(ResultPayload $payload): static;
 
     /**
-     * @phpstan-return TResultPayload
+     * @return TResultPayload
      */
     public function getPayload(): ResultPayload;
 }

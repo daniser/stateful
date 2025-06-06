@@ -24,7 +24,7 @@ class Result implements ArrayAccess, Contracts\Result
     protected array $context = [];
 
     /**
-     * @phpstan-param TResultPayload $payload
+     * @param  TResultPayload  $payload
      */
     public function __construct(protected ResultPayload $payload) {}
 

@@ -57,9 +57,9 @@ class ConnectionManager extends Support\Manager implements Contracts\Client, Con
     /**
      * @template TClient of Contracts\Client
      *
-     * @phpstan-param TClient $client
+     * @param  TClient  $client
      * @param  list<class-string>  $middleware
-     * @phpstan-return (TClient is ExtendedClient<Contracts\Client> ? TClient : ExtendedClient<TClient>)
+     * @return (TClient is ExtendedClient<Contracts\Client> ? TClient : ExtendedClient<TClient>)
      */
     protected function decorateInstance(Contracts\Client $client, array $middleware): ExtendedClient
     {
