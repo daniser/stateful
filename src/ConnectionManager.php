@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TTBooking\Stateful;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Arr;
 use TTBooking\Stateful\Contracts\Query;
 use TTBooking\Stateful\Contracts\QueryPayload;
@@ -34,16 +35,36 @@ class ConnectionManager extends Support\Manager implements Contracts\Client, Con
     }
 
     /**
-     * @param  array{uri: string}  $config
+     * @param  array{uri: string, middleware?: list<class-string>}  $config
+     * @return ExtendedClient<Client>
      *
      * @throws BindingResolutionException
      */
-    protected function createDefaultDriver(array $config): Client
+    protected function createDefaultDriver(array $config): ExtendedClient
     {
-        /** @var Client */
-        return $this->container->make(Client::class, [
+        /** @var list<class-string> $middleware */
+        $middleware = Arr::pull($config, 'middleware', config('stateful.middleware', []));
+
+        /** @var Client $client */
+        $client = $this->container->make(Client::class, [
             'baseUri' => Arr::pull($config, 'uri'),
             'defaultContext' => $config,
         ]);
+
+        return $this->decorateInstance($client, $middleware);
+    }
+
+    /**
+     * @template TClient of Contracts\Client
+     *
+     * @phpstan-param TClient $client
+     * @param  list<class-string>  $middleware
+     * @phpstan-return (TClient is ExtendedClient<Contracts\Client> ? TClient : ExtendedClient<TClient>)
+     */
+    protected function decorateInstance(Contracts\Client $client, array $middleware): ExtendedClient
+    {
+        /** @var (TClient is ExtendedClient<Contracts\Client> ? TClient : ExtendedClient<TClient>) */
+        return $client instanceof ExtendedClient ?
+            $client : new ExtendedClient($client, new Pipeline($this->container), $middleware);
     }
 }

@@ -51,13 +51,6 @@ class StatefulServiceProvider extends ServiceProvider implements DeferrableProvi
         $this->app->alias('stateful-client', Contracts\ClientFactory::class);
         $this->app->alias('stateful-client.connection', Contracts\Client::class);
 
-        $this->app->extend(Client::class, static function (Client $client, Container $container) {
-            /** @var list<class-string> $middleware */
-            $middleware = config('stateful.middleware', []);
-
-            return new ExtendedClient($client, new Pipeline($container), $middleware);
-        });
-
         $this->app->when(AmendMiddleware::class)->needs('$typeAmenders')->giveConfig('stateful.amenders.type', []);
         $this->app->when(AmendMiddleware::class)->needs('$pathAmenders')->giveConfig('stateful.amenders.path', []);
 
