@@ -18,7 +18,7 @@ interface Factory
      *
      * @throws InvalidArgumentException
      */
-    public function connection(?string $name = null);
+    public function connection(?string $name = null): object;
 
     /**
      * Get all of the created connections.

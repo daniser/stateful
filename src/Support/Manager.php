@@ -63,7 +63,7 @@ abstract class Manager implements Factory
      *
      * @throws InvalidArgumentException
      */
-    public function connection(?string $name = null)
+    public function connection(?string $name = null): object
     {
         $name ??= $this->getDefaultDriver();
 
@@ -111,7 +111,7 @@ abstract class Manager implements Factory
      *
      * @throws InvalidArgumentException
      */
-    protected function resolve(string $name)
+    protected function resolve(string $name): object
     {
         $config = $this->getConfig($name);
 
@@ -122,8 +122,21 @@ abstract class Manager implements Factory
             throw new InvalidArgumentException("Driver for connection [$name] not defined.");
         }
 
+        // @phpstan-ignore argument.type
+        return $this->createInstance($config, $name, $driver);
+    }
+
+    /**
+     * Create a new connection instance.
+     *
+     * @param  array<string, mixed>  $config
+     * @return TConnection
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function createInstance(array $config, string $name, string $driver): object
+    {
         if (isset($this->customCreators[$driver])) {
-            // @phpstan-ignore argument.type
             return $this->callCustomCreator($config, $name, $driver);
         } else {
             $method = 'create'.Str::studly($driver).'Driver';
@@ -143,7 +156,7 @@ abstract class Manager implements Factory
      * @param  array<string, mixed>  $config
      * @return TConnection
      */
-    protected function callCustomCreator(array $config, string $name, string $driver)
+    protected function callCustomCreator(array $config, string $name, string $driver): object
     {
         return $this->customCreators[$driver]($this->container, $config, $name, $driver);
     }

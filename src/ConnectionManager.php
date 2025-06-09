@@ -35,21 +35,31 @@ class ConnectionManager extends Support\Manager implements Contracts\Client, Con
     }
 
     /**
-     * @param  array{uri: string, middleware?: list<class-string>}  $config
-     * @return ExtendedClient<Client>
+     * @param  array{uri: string}  $config
+     * @return Client
      *
      * @throws BindingResolutionException
      */
-    protected function createDefaultDriver(array $config): ExtendedClient
+    protected function createDefaultDriver(array $config): Client
+    {
+        /** @var Client */
+        return $this->container->make(Client::class, [
+            'baseUri' => Arr::pull($config, 'uri'),
+            'defaultContext' => $config,
+        ]);
+    }
+
+    /**
+     * @param  array{middleware?: list<class-string>}  $config
+     * @return ExtendedClient<Contracts\Client>
+     */
+    protected function createInstance(array $config, string $name, string $driver): ExtendedClient
     {
         /** @var list<class-string> $middleware */
         $middleware = Arr::pull($config, 'middleware', config('stateful.middleware', []));
 
-        /** @var Client $client */
-        $client = $this->container->make(Client::class, [
-            'baseUri' => Arr::pull($config, 'uri'),
-            'defaultContext' => $config,
-        ]);
+        // @phpstan-ignore argument.type
+        $client = parent::createInstance($config, $name, $driver);
 
         return $this->decorateInstance($client, $middleware);
     }
