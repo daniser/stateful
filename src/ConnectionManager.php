@@ -36,7 +36,6 @@ class ConnectionManager extends Support\Manager implements Contracts\Client, Con
 
     /**
      * @param  array{uri: string}  $config
-     * @return Client
      *
      * @throws BindingResolutionException
      */
@@ -51,7 +50,7 @@ class ConnectionManager extends Support\Manager implements Contracts\Client, Con
 
     /**
      * @param  array{middleware?: list<class-string>}  $config
-     * @return ExtendedClient<Contracts\Client>
+     * @return ExtendedClient<covariant Contracts\Client>
      */
     protected function createInstance(array $config, string $name, string $driver): ExtendedClient
     {
