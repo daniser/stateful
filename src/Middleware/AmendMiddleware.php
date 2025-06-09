@@ -42,7 +42,7 @@ class AmendMiddleware
 
         /** @var RecursivePathIterator<array-key, array<mixed>|object> $iterator */
         $iterator = new RecursiveIteratorIterator(
-            new ParentIterator(new RecursivePathIterator(new RecursiveArrayIterator($result))),
+            new ParentIterator(new RecursivePathIterator(new RecursiveArrayIterator($result->getPayload()))),
             RecursiveIteratorIterator::CHILD_FIRST
         );
 

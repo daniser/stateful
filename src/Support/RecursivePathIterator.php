@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TTBooking\Stateful\Support;
 
+use DateTimeInterface;
 use OuterIterator;
 use RecursiveIterator;
 
@@ -42,6 +43,11 @@ class RecursivePathIterator implements OuterIterator, RecursiveIterator
 
     public function hasChildren(): bool
     {
+        // TODO: what???
+        if ($this->iterator->current() instanceof DateTimeInterface) {
+            return false;
+        }
+
         return $this->iterator->hasChildren();
     }
 
