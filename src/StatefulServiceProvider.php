@@ -44,28 +44,13 @@ class StatefulServiceProvider extends ServiceProvider implements DeferrableProvi
      */
     protected function registerServices(): void
     {
-        /** @phpstan-ignore-next-line */
-        $this->app->singleton('stateful-client.connection', static fn ($app) => $app['stateful-client']->connection());
         $this->app->alias('stateful-client', Contracts\ClientFactory::class);
-        $this->app->alias('stateful-client.connection', Contracts\Client::class);
+        $this->app->alias('stateful-store', Contracts\RepositoryFactory::class);
+        $this->app->alias('stateful-serializer', Contracts\SerializerFactory::class);
+        $this->app->alias('stateful', Contracts\ServiceFactory::class);
 
         $this->app->when(AmendMiddleware::class)->needs('$typeAmenders')->giveConfig('stateful.amenders.type', []);
         $this->app->when(AmendMiddleware::class)->needs('$pathAmenders')->giveConfig('stateful.amenders.path', []);
-
-        /** @phpstan-ignore-next-line */
-        $this->app->singleton('stateful-store.store', static fn ($app) => $app['stateful-store']->connection());
-        $this->app->alias('stateful-store', Contracts\RepositoryFactory::class);
-        $this->app->alias('stateful-store.store', Contracts\StateRepository::class);
-
-        /** @phpstan-ignore-next-line */
-        $this->app->singleton('stateful-serializer.serializer', static fn ($app) => $app['stateful-serializer']->serializer());
-        $this->app->alias('stateful-serializer', Contracts\SerializerFactory::class);
-        $this->app->alias('stateful-serializer.serializer', Contracts\Serializer::class);
-
-        /** @phpstan-ignore-next-line */
-        $this->app->singleton('stateful.service', static fn ($app) => $app['stateful']->service());
-        $this->app->alias('stateful', Contracts\ServiceFactory::class);
-        $this->app->alias('stateful.service', Contracts\Service::class);
     }
 
     /**
@@ -76,14 +61,10 @@ class StatefulServiceProvider extends ServiceProvider implements DeferrableProvi
     public function provides(): array
     {
         return [
-            'stateful-client', 'stateful-client.connection',
-            Contracts\ClientFactory::class, Contracts\Client::class,
-            'stateful-store', 'stateful-store.store',
-            Contracts\RepositoryFactory::class, Contracts\StateRepository::class,
-            'stateful-serializer', 'stateful-serializer.serializer',
-            Contracts\SerializerFactory::class, Contracts\Serializer::class,
-            'stateful', 'stateful.service',
-            Contracts\ServiceFactory::class, Contracts\Service::class,
+            'stateful-client', Contracts\ClientFactory::class,
+            'stateful-store', Contracts\RepositoryFactory::class,
+            'stateful-serializer', Contracts\SerializerFactory::class,
+            'stateful', Contracts\ServiceFactory::class,
         ];
     }
 }
