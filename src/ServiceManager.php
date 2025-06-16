@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TTBooking\Stateful;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use TTBooking\Stateful\Contracts\Query;
 use TTBooking\Stateful\Contracts\QueryPayload;
@@ -87,13 +88,44 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
      */
     protected function createDefaultDriver(array $config, string $name): Service
     {
-        return new Service(
-            $serializer = $this->createSerializer($config, $name),
-            $aliasResolver = $this->createAliasResolver($config, $name),
-            $this->createClient($config, $name, $serializer),
-            $this->createRepository($config, $name, $serializer, $aliasResolver),
-            $this->container,
+        return $this->cloneContainer($config, $name)->make(Service::class);
+    }
+
+    /**
+     * @param  array{
+     *      serializer?: array<string, mixed>|string,
+     *      connection?: array<string, mixed>|string,
+     *      store?: array<string, mixed>|string,
+     *      query_payload_classes?: array<array-key, class-string<QueryPayload>>,
+     *  }  $config
+     *
+     * @throws BindingResolutionException
+     */
+    protected function cloneContainer(array $config, string $name): Container
+    {
+        $container = clone $this->container;
+
+        $container->instance(
+            Contracts\Serializer::class,
+            $serializer = $this->createSerializer($config, $name)
         );
+
+        $container->instance(
+            Contracts\AliasResolver::class,
+            $aliasResolver = $this->createAliasResolver($config, $name)
+        );
+
+        $container->instance(
+            Contracts\Client::class,
+            $this->createClient($config, $name, $serializer)
+        );
+
+        $container->instance(
+            Contracts\StateRepository::class,
+            $this->createRepository($config, $name, $serializer, $aliasResolver)
+        );
+
+        return $container;
     }
 
     /**
@@ -101,7 +133,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
      *
      * @throws BindingResolutionException
      */
-    public function createSerializer(array $config, string $name): Contracts\Serializer
+    protected function createSerializer(array $config, string $name): Contracts\Serializer
     {
         /** @var Contracts\SerializerFactory $factory */
         $factory = $this->container->make(Contracts\SerializerFactory::class);
@@ -112,7 +144,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
     /**
      * @param  array{query_payload_classes?: array<array-key, class-string<QueryPayload>>}  $config
      */
-    public function createAliasResolver(array $config, string $name): Contracts\AliasResolver
+    protected function createAliasResolver(array $config, string $name): Contracts\AliasResolver
     {
         return new AliasResolver($config['query_payload_classes'] ?? []);
     }
@@ -122,7 +154,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
      *
      * @throws BindingResolutionException
      */
-    public function createClient(array $config, string $name, ?Contracts\Serializer $serializer): Contracts\Client
+    protected function createClient(array $config, string $name, ?Contracts\Serializer $serializer): Contracts\Client
     {
         /** @var Contracts\ClientFactory $factory */
         $factory = $this->container->make(Contracts\ClientFactory::class);
@@ -141,7 +173,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
      *
      * @throws BindingResolutionException
      */
-    public function createRepository(
+    protected function createRepository(
         array $config,
         string $name,
         ?Contracts\Serializer $serializer,
