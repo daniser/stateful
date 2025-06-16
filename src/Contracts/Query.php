@@ -46,4 +46,6 @@ interface Query
      * @return array<string, string>
      */
     public function getHeaders(): array;
+
+    public function getBody(): mixed;
 }

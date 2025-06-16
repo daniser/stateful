@@ -83,7 +83,7 @@ class Client implements Contracts\Client, Contracts\SerializesData
             $query->getEndpoint(),
             $query->getMethod(),
             $query->getHeaders(),
-            $this->serializer->serialize($this->validate($query->getPayload()), $query->getContext())
+            $this->serializer->serialize($this->validate($query->getBody()), $query->getContext())
         );
     }
 

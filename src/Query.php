@@ -68,6 +68,11 @@ class Query implements ArrayAccess, Contracts\Query
         return $this->payload;
     }
 
+    public function getBody(): mixed
+    {
+        return $this->getPayload();
+    }
+
     /**
      * Force a clone of the underlying payload when cloning.
      */
