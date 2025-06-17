@@ -88,6 +88,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
      */
     protected function createDefaultDriver(array $config, string $name): Service
     {
+        /** @var Service */
         return $this->cloneContainer($config, $name)->make(Service::class);
     }
 
