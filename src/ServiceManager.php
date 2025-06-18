@@ -7,12 +7,13 @@ namespace TTBooking\Stateful;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
+use TTBooking\Stateful\Contracts\ClientFactory;
 use TTBooking\Stateful\Contracts\Query;
 use TTBooking\Stateful\Contracts\QueryPayload;
-use TTBooking\Stateful\Contracts\ResolvesAliases;
+use TTBooking\Stateful\Contracts\RepositoryFactory;
 use TTBooking\Stateful\Contracts\Result;
 use TTBooking\Stateful\Contracts\ResultPayload;
-use TTBooking\Stateful\Contracts\SerializesData;
+use TTBooking\Stateful\Contracts\SerializerFactory;
 use TTBooking\Stateful\Exceptions\ClientException;
 
 /**
@@ -99,8 +100,6 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
      *      store?: array<string, mixed>|string,
      *      query_payload_classes?: array<array-key, class-string<QueryPayload>>,
      *  }  $config
-     *
-     * @throws BindingResolutionException
      */
     protected function cloneContainer(array $config, string $name): Container
     {
@@ -108,22 +107,19 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
 
         $container->instance(
             Contracts\Serializer::class,
-            $serializer = $this->createSerializer($config, $name)
+            $container->call($this->createSerializer(...), compact('config', 'name'))
         );
 
-        $container->instance(
-            Contracts\AliasResolver::class,
-            $aliasResolver = $this->createAliasResolver($config, $name)
-        );
+        $container->instance(Contracts\AliasResolver::class, $this->createAliasResolver($config));
 
         $container->instance(
             Contracts\Client::class,
-            $this->createClient($config, $name, $serializer)
+            $container->call($this->createClient(...), compact('config', 'name'))
         );
 
         $container->instance(
             Contracts\StateRepository::class,
-            $this->createRepository($config, $name, $serializer, $aliasResolver)
+            $container->call($this->createRepository(...), compact('config', 'name'))
         );
 
         return $container;
@@ -131,69 +127,35 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
 
     /**
      * @param  array{serializer?: array<string, mixed>|string}  $config
-     *
-     * @throws BindingResolutionException
      */
-    protected function createSerializer(array $config, string $name): Contracts\Serializer
+    protected function createSerializer(SerializerFactory $factory, array $config, string $name): Contracts\Serializer
     {
-        /** @var Contracts\SerializerFactory $factory */
-        $factory = $this->container->make(Contracts\SerializerFactory::class);
-
         return $factory->serializer($this->getConnectionName($config, 'serializer', $name));
     }
 
     /**
      * @param  array{query_payload_classes?: array<array-key, class-string<QueryPayload>>}  $config
      */
-    protected function createAliasResolver(array $config, string $name): Contracts\AliasResolver
+    protected function createAliasResolver(array $config): Contracts\AliasResolver
     {
         return new AliasResolver($config['query_payload_classes'] ?? []);
     }
 
     /**
      * @param  array{connection?: array<string, mixed>|string}  $config
-     *
-     * @throws BindingResolutionException
      */
-    protected function createClient(array $config, string $name, ?Contracts\Serializer $serializer): Contracts\Client
+    protected function createClient(ClientFactory $factory, array $config, string $name): Contracts\Client
     {
-        /** @var Contracts\ClientFactory $factory */
-        $factory = $this->container->make(Contracts\ClientFactory::class);
-
-        $client = $factory->connection($this->getConnectionName($config, 'connection', $name));
-
-        if ($serializer && $client instanceof SerializesData) {
-            return (clone $client)->setSerializer($serializer);
-        }
-
-        return $client;
+        return $factory->connection($this->getConnectionName($config, 'connection', $name));
     }
 
     /**
+     * @param  RepositoryFactory<Contracts\StateRepository>  $factory
      * @param  array{store?: array<string, mixed>|string}  $config
-     *
-     * @throws BindingResolutionException
      */
-    protected function createRepository(
-        array $config,
-        string $name,
-        ?Contracts\Serializer $serializer,
-        ?Contracts\AliasResolver $aliasResolver,
-    ): Contracts\StateRepository {
-        /** @var Contracts\RepositoryFactory<Contracts\StateRepository> $factory */
-        $factory = $this->container->make(Contracts\RepositoryFactory::class);
-
-        $repository = clone $factory->connection($this->getConnectionName($config, 'store', $name));
-
-        if ($serializer && $repository instanceof SerializesData) {
-            $repository->setSerializer($serializer);
-        }
-
-        if ($aliasResolver && $repository instanceof ResolvesAliases) {
-            $repository->setAliasResolver($aliasResolver);
-        }
-
-        return $repository;
+    protected function createRepository(RepositoryFactory $factory, array $config, string $name): Contracts\StateRepository
+    {
+        return $factory->connection($this->getConnectionName($config, 'store', $name));
     }
 
     /**

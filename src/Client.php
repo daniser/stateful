@@ -20,13 +20,10 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use TTBooking\Stateful\Concerns\HasSerializer;
 use TTBooking\Stateful\Exceptions\ClientException;
 
-class Client implements Contracts\Client, Contracts\SerializesData
+class Client implements Contracts\Client
 {
-    use HasSerializer;
-
     protected HttpClientInterface $httpClient;
 
     protected RequestFactoryInterface $requestFactory;
@@ -34,6 +31,8 @@ class Client implements Contracts\Client, Contracts\SerializesData
     protected StreamFactoryInterface $streamFactory;
 
     protected ValidatorInterface $validator;
+
+    protected Contracts\Serializer $serializer;
 
     /**
      * @param  array<string, mixed>  $defaultContext

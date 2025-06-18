@@ -9,8 +9,6 @@ use TTBooking\Stateful\Contracts\Query;
 use TTBooking\Stateful\Contracts\QueryPayload;
 use TTBooking\Stateful\Contracts\Result;
 use TTBooking\Stateful\Contracts\ResultPayload;
-use TTBooking\Stateful\Contracts\Serializer;
-use TTBooking\Stateful\Contracts\SerializesData;
 use TTBooking\Stateful\Exceptions\ClientException;
 
 /**
@@ -18,7 +16,7 @@ use TTBooking\Stateful\Exceptions\ClientException;
  *
  * @mixin TClient
  */
-class ExtendedClient implements Contracts\Client, SerializesData
+class ExtendedClient implements Contracts\Client
 {
     /**
      * @param  TClient  $client
@@ -46,15 +44,6 @@ class ExtendedClient implements Contracts\Client, SerializesData
             ->send($query)
             ->through($this->middleware)
             ->then($this->client->query(...));
-    }
-
-    public function setSerializer(Serializer $serializer): static
-    {
-        if ($this->client instanceof SerializesData) {
-            $this->client->setSerializer($serializer);
-        }
-
-        return $this;
     }
 
     /**
