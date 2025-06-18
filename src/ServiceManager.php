@@ -105,6 +105,8 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
     {
         $container = clone $this->container;
 
+        $container->instance(Container::class, $container);
+
         $container->instance(
             Contracts\Serializer::class,
             $container->call($this->createSerializer(...), compact('config', 'name'))
