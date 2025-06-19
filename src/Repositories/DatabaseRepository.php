@@ -38,6 +38,7 @@ class DatabaseRepository implements StateRepository
         /**
          * @var \stdClass&object{
          *     id: string,
+         *     service: non-empty-string,
          *     type: non-empty-string,
          *     query: string,
          *     result: string,
@@ -61,6 +62,7 @@ class DatabaseRepository implements StateRepository
             id: $state->id,
             query: $query,
             result: $result,
+            service: $state->service,
             parentId: $meta['parent_id'] ?? null,
         );
     }
@@ -70,6 +72,7 @@ class DatabaseRepository implements StateRepository
         $this->connection->table($this->table)->insert([
             'id' => $state->id,
             'base_uri' => $state->query->getBaseUri(),
+            'service' => $state->service,
             'type' => get_class($state->query),
             'query' => $this->serializer->serialize($state->query),
             'result' => $this->serializer->serialize($state->result),

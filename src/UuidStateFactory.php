@@ -9,8 +9,8 @@ use TTBooking\Stateful\Contracts\StateFactory;
 
 class UuidStateFactory implements StateFactory
 {
-    public function make(Contracts\Query $query, Contracts\Result $result, ?string $parentId = null): State
+    public function make(Contracts\Query $query, Contracts\Result $result, string $service = 'unknown', ?string $parentId = null): State
     {
-        return new State((string) new UuidV7, $query, $result, $parentId);
+        return new State((string) new UuidV7, $query, $result, $service, $parentId);
     }
 }

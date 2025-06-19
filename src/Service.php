@@ -17,6 +17,7 @@ use TTBooking\Stateful\Exceptions\UnknownQueryTypeException;
 class Service implements Contracts\Service
 {
     public function __construct(
+        protected string $name,
         protected Contracts\Serializer $serializer,
         protected Contracts\AliasResolver $aliasResolver,
         protected Contracts\Client $client,
@@ -50,7 +51,7 @@ class Service implements Contracts\Service
      */
     public function query(Query $query): Result
     {
-        return $this->client->query($query);
+        return $this->client->query($query->withContext(['service' => $this->name]));
     }
 
     public function has(string $id): bool

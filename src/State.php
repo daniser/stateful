@@ -17,6 +17,7 @@ final readonly class State
         public string $id,
         public Contracts\Query $query,
         public Contracts\Result $result,
+        public string $service = 'unknown',
         public ?string $parentId = null,
     ) {}
 }

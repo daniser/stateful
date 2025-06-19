@@ -35,13 +35,14 @@ class EloquentRepository implements StateRepository
             throw new StateNotFoundException("State [$id] not found.", $e->getCode(), $e);
         }
 
-        return new State($id, $model->query, $model->result);
+        return new State($id, $model->query, $model->result, $model->service);
     }
 
     public function put(State $state): State
     {
         $this->model->newQuery()->forceCreate([
             'id' => $state->id,
+            'service' => $state->service,
             'query' => $state->query,
             'result' => $state->result,
         ]);

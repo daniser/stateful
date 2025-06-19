@@ -124,6 +124,8 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
             $container->call($this->createRepository(...), compact('config', 'name'))
         );
 
+        $container->when(Contracts\Service::class)->needs('$name')->give($name);
+
         return $container;
     }
 

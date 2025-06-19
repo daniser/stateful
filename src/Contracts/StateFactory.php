@@ -15,5 +15,5 @@ interface StateFactory
      * @param  Query<TQueryPayload>  $query
      * @param  Result<TResultPayload>  $result
      */
-    public function make(Query $query, Result $result, ?string $parentId = null): State;
+    public function make(Query $query, Result $result, string $service = 'unknown', ?string $parentId = null): State;
 }
