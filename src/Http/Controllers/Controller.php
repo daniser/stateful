@@ -10,12 +10,16 @@ use TTBooking\Stateful\Facades\Stateful;
 
 class Controller extends BaseController
 {
-    public function query(string $service, string $query): JsonResponse
+    public function query(string $service, string $query, ?string $state = null, ?string $closest = null): JsonResponse
     {
         $service = Stateful::service($service);
 
+        if ($state) {
+            $state = $service->get($state);
+        }
+
         return JsonResponse::fromJsonString(
-            $service->serialize($service->query($service->newQuery($query)))
+            $service->serialize($service->query($service->newQuery($query, $state)))
         );
     }
 

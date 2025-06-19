@@ -69,12 +69,12 @@ class Service implements Contracts\Service
         return $this->store->put($state);
     }
 
-    public function newQuery(string $type, ?Request $request = null): Query
+    public function newQuery(string $type, ?State $state = null, ?Request $request = null): Query
     {
         method_exists($this, $method = 'new'.Str::studly($type).'Query')
             or throw new UnknownQueryTypeException("Unknown query type [$type].");
 
         /** @var Query */
-        return $this->container->call($this->$method(...));
+        return $this->container->call($this->$method(...), compact('state'));
     }
 }
