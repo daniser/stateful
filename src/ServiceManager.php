@@ -90,7 +90,7 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
     protected function createDefaultDriver(array $config, string $name): Service
     {
         /** @var Service */
-        return $this->cloneContainer($config, $name)->make(Service::class);
+        return $this->cloneContainer($config, $name)->make(Service::class, compact('name'));
     }
 
     /**
@@ -123,8 +123,6 @@ class ServiceManager extends Support\Manager implements Contracts\Service, Contr
             Contracts\StateRepository::class,
             $container->call($this->createRepository(...), compact('config', 'name'))
         );
-
-        $container->when(Contracts\Service::class)->needs('$name')->give($name);
 
         return $container;
     }
