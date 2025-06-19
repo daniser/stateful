@@ -14,7 +14,7 @@ class Controller extends BaseController
     {
         $service = Stateful::service($service);
 
-        if ($state) {
+        if (isset($state)) {
             $state = $service->get($state);
         }
 
