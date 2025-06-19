@@ -126,8 +126,8 @@ return [
     */
 
     'middleware' => [
-        TTBooking\Stateful\Middleware\AmendMiddleware::class,
         TTBooking\Stateful\Middleware\StoreMiddleware::class,
+        TTBooking\Stateful\Middleware\AmendMiddleware::class,
     ],
 
     /*
