@@ -12,7 +12,9 @@ use TTBooking\Stateful\Contracts\QueryPayload;
 use TTBooking\Stateful\Contracts\Result;
 use TTBooking\Stateful\Contracts\ResultPayload;
 use TTBooking\Stateful\Exceptions\ClientException;
+use TTBooking\Stateful\Exceptions\IncompatibleStateException;
 use TTBooking\Stateful\Exceptions\UnknownQueryTypeException;
+use TypeError;
 
 class Service implements Contracts\Service
 {
@@ -74,7 +76,11 @@ class Service implements Contracts\Service
         method_exists($this, $method = 'new'.Str::studly($type).'Query')
             or throw new UnknownQueryTypeException("Unknown query type [$type].");
 
-        /** @var Query */
-        return $this->container->call($this->$method(...), compact('state'));
+        try {
+            /** @var Query */
+            return $this->container->call($this->$method(...), compact('state'));
+        } catch (TypeError $e) {
+            throw IncompatibleStateException::fromTypeError($e, $type, $state) ?? $e;
+        }
     }
 }
