@@ -7,6 +7,7 @@ namespace TTBooking\Stateful\Facades;
 use Illuminate\Support\Facades\Facade;
 use TTBooking\Stateful\Contracts\StateRepository;
 use TTBooking\Stateful\State as StatefulState;
+use TTBooking\Stateful\StorageManager;
 
 /**
  * @method static StateRepository connection(string $name = null)
@@ -14,7 +15,7 @@ use TTBooking\Stateful\State as StatefulState;
  * @method static StatefulState get(string $id)
  * @method static StatefulState put(StatefulState $state)
  *
- * @see \TTBooking\Stateful\StorageManager
+ * @see StorageManager
  */
 class State extends Facade
 {

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Facade;
 use TTBooking\Stateful\Contracts\Query;
 use TTBooking\Stateful\Contracts\Result;
 use TTBooking\Stateful\Contracts\Service;
+use TTBooking\Stateful\ServiceManager;
 use TTBooking\Stateful\State;
 
 /**
@@ -23,7 +24,7 @@ use TTBooking\Stateful\State;
  * @method static State put(State $state)
  * @method static Query newQuery(string $type, Request $request = null)
  *
- * @see \TTBooking\Stateful\ServiceManager
+ * @see ServiceManager
  */
 class Stateful extends Facade
 {

@@ -1,5 +1,15 @@
 <?php
 
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
+use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
+use TTBooking\Stateful\Middleware\AmendMiddleware;
+use TTBooking\Stateful\Middleware\StoreMiddleware;
+use TTBooking\Stateful\State;
+
 /** @var string $store */
 $store = env('SF_REPOSITORY', 'eloquent');
 
@@ -85,7 +95,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'state' => TTBooking\Stateful\State::class,
+    'state' => State::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -101,20 +111,20 @@ return [
 
         'symfony' => [
             'normalizers' => [
-                Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer::class,
-                Symfony\Component\Serializer\Normalizer\DateTimeNormalizer::class,
-                Symfony\Component\Serializer\Normalizer\ArrayDenormalizer::class,
-                Symfony\Component\Serializer\Normalizer\PropertyNormalizer::class,
+                BackedEnumNormalizer::class,
+                DateTimeNormalizer::class,
+                ArrayDenormalizer::class,
+                PropertyNormalizer::class,
             ],
             'encoders' => [
-                Symfony\Component\Serializer\Encoder\JsonEncoder::class,
+                JsonEncoder::class,
             ],
             'context' => [],
         ],
 
         'jms' => [
             'enum_support' => true,
-            'naming_strategy' => JMS\Serializer\Naming\IdenticalPropertyNamingStrategy::class,
+            'naming_strategy' => IdenticalPropertyNamingStrategy::class,
         ],
 
     ],
@@ -126,8 +136,8 @@ return [
     */
 
     'middleware' => [
-        TTBooking\Stateful\Middleware\StoreMiddleware::class,
-        TTBooking\Stateful\Middleware\AmendMiddleware::class,
+        StoreMiddleware::class,
+        AmendMiddleware::class,
     ],
 
     /*
